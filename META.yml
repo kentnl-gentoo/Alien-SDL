@@ -1,0 +1,18 @@
+---
+name: Alien-SDL
+version: 0.01
+author: []
+abstract: 'building, finding and using SDL binaries'
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+configure_requires:
+  Module::Build: 0.34
+provides:
+  Alien::SDL:
+    file: lib/Alien/SDL.pm
+    version: 0.01
+generated_by: Module::Build version 0.34
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
