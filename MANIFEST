@@ -1,3 +1,4 @@
+Alien-SDL-v0.7.3.tar.gz
 Build
 Build.PL
 CHANGELOG
@@ -9,10 +10,10 @@ inc/IPC/Cmd.pm
 inc/Utility.pm
 lib/Alien/SDL.pm
 LICENSE
-Makefile.PL
+Makefile
 MANIFEST			This list of files
 MANIFEST.SKIP
+META.yml
 README
 t/001_load.t
 Todo
-META.yml
