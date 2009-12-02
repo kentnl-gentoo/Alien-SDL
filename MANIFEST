@@ -1,6 +1,4 @@
-Build
 Build.PL
-CHANGELOG
 Changes
 inc/Archive/Extract.pm
 inc/File/Fetch.pm
