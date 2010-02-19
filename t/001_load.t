@@ -1,12 +1,7 @@
-# -*- perl -*-
+# t/001_load.t - test module loading and basic functionality
 
-# t/001_load.t - check module loading and create testing directory
+use Test::More tests => 1;
 
-use Test::More tests => 2;
-use inc::Utility;
 BEGIN { use_ok( 'Alien::SDL' ); }
 
-is( 1, inc::Utility->sdl_con_found(), "Trying to find sdl-config" );
-
-
-
+diag( "Testing Alien::SDL $Alien::SDL::VERSION, Perl $], $^X" );

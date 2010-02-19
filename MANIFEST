@@ -1,15 +1,18 @@
 Build.PL
 Changes
-inc/Archive/Extract.pm
-inc/File/Fetch.pm
-inc/File/Spec/Unix.pm
-inc/IPC/Cmd.pm
-inc/Utility.pm
+inc/My/Builder.pm
+inc/My/Builder/Unix.pm
+inc/My/Builder/Windows.pm
+inc/My/Utility.pm
 lib/Alien/SDL.pm
 LICENSE
 MANIFEST			This list of files
 MANIFEST.SKIP
+META.yml
+patches/test1.patch
 README
 t/001_load.t
-Todo
-META.yml
+t/002_config.t
+t/003_check_header.t
+t/004_get_header_version.t
+TODO
