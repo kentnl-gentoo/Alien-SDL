@@ -15,11 +15,11 @@ Alien::SDL - building, finding and using SDL binaries
 
 =head1 VERSION
 
-Version 0.8.0
+Version 0.8.2
 
 =cut
 
-our $VERSION = '0.8.1';
+our $VERSION = '0.8.2';
 
 =head1 SYNOPSIS
 
@@ -87,7 +87,7 @@ functionality (see below).
 
 =head1 METHODS
 
-=head2 sdl_config()
+=head2 config()
 
 This function is the main public interface to this module. Basic
 functionality works in a very similar maner to 'sdl-config' script:
