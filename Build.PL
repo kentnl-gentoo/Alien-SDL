@@ -37,7 +37,7 @@ my $build = $package->new(
     'File::Path'       => '2.07',
     'File::Fetch'      => '0',
     'File::Find'       => '0',
-    'Digest::SHA1'     => '0',
+    'Digest::SHA'      => '0',
     'Archive::Extract' => '0',
     'Archive::Tar'     => '0',
     'Archive::Zip'     => '0',
@@ -47,7 +47,7 @@ my $build = $package->new(
     'File::Path'       => '2.07',
     'File::Fetch'      => '0',
     'File::Find'       => '0',
-    'Digest::SHA1'     => '0',
+    'Digest::SHA'      => '0',
     'Archive::Extract' => '0',
   },
   meta_merge => {
