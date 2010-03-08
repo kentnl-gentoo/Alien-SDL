@@ -20,7 +20,7 @@ configure_requires:
   File::Spec: 0
   Module::Build: 0.36
 generated_by: 'Module::Build version 0.3603'
-license: unknown
+license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
@@ -28,7 +28,7 @@ name: Alien-SDL
 provides:
   Alien::SDL:
     file: lib/Alien/SDL.pm
-    version: 0.9
+    version: v0.9.1
 requires:
   ExtUtils::CBuilder: 0
   File::ShareDir: 1.00
@@ -36,5 +36,6 @@ requires:
   File::Temp: 0
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Alien-SDL
+  license: http://dev.perl.org/licenses/
   repository: http://github.com/kthakore/Alien_SDL
-version: 0.9
+version: v0.9.1

@@ -15,11 +15,12 @@ Alien::SDL - building, finding and using SDL binaries
 
 =head1 VERSION
 
-Version 0.9.
+Version 0.9.1
 
 =cut
 
-our $VERSION = '0.9';
+our $VERSION = '0.9.1';
+$VERSION = eval $VERSION;
 
 =head1 SYNOPSIS
 
@@ -218,6 +219,10 @@ sub check_header {
   $inc .= "#include <$_>\n" for @header;  
   syswrite($fs, <<MARKER); # write test source code
 #include <stdio.h>
+#if defined(_WIN32) && !defined(__CYGWIN__)
+/* GL/gl.h on Win32 requires windows.h being included before */
+#include <windows.h>
+#endif
 $inc
 int demofunc(void) { return 0; }
 

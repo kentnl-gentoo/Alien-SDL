@@ -8,7 +8,6 @@ lib/Alien/SDL.pm
 LICENSE
 MANIFEST			This list of files
 MANIFEST.SKIP
-META.yml
 patches/test1.patch
 README
 t/001_load.t
@@ -16,3 +15,4 @@ t/002_config.t
 t/003_check_header.t
 t/004_get_header_version.t
 TODO
+META.yml

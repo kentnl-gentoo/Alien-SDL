@@ -15,20 +15,29 @@ use Cwd qw(realpath);
 # - the order matters, we offer binaries to user in the same order (1st = preffered)
 my $prebuilt_binaries = [
     {
-      title    => "Binaries Win/32bit SDL-1.2.14 (stable)\n" .
-                  "\t(gfx, image, mixer, net, smpeg, ttf)",
-      url      => 'http://sdl.perl.org/assets/lib-SDL-bin_win32.zip',
-      sha1sum  => 'b3f419e6886512b18f2e052013f0d6828aeed40c',
+      title    => "Binaries Win/32bit SDL-1.2.14 (extended, 20100301) RECOMMENDED\n" .
+                  "\t(gfx, image, mixer, net, smpeg, ttf, sound, svg, rtf, Pango)",
+      url      => 'http://strawberryperl.com/package/kmx/sdl/Win32_SDL-1.2.14-extended-bin_20100301.zip',
+      sha1sum  => 'e6dc884a833199e195523a9a31352d4ed5cb6255',
       arch_re  => qr/^MSWin32-x86-multi-thread$/,
       os_re    => qr/^MSWin32$/,
       cc_re    => qr/gcc/,
     },
     {
-      title    => "Binaries Win/32bit SDL-1.2.14 (experimental)\n" .
-	              "\t(gfx, image, mixer, net, smpeg, ttf, sound, svg, rtf, Pango)",
-      url      => 'http://strawberryperl.com/package/kmx/sdl/SDL-bin-20100214-w32.zip',
-      sha1sum  => '5c2ea3c31f7a84be84bba650583981eec9ce103d',
+      title    => "Binaries Win/32bit SDL-1.2.14 (20090831)\n" .
+                  "\t(gfx, image, mixer, net, smpeg, ttf)",
+      url      => 'http://strawberryperl.com/package/kmx/sdl/lib-SDL-bin_win32_v3.zip',
+      sha1sum  => '64950f826469e6938aa3e513aa40da8689a2f074',
       arch_re  => qr/^MSWin32-x86-multi-thread$/,
+      os_re    => qr/^MSWin32$/,
+      cc_re    => qr/gcc/,
+    },
+    {
+      title    => "Binaries Win/64bit SDL-1.2.14 (experimental, 20100301)\n" .
+                  "\t(gfx, image, mixer, net, smpeg, ttf, sound, svg, rtf, Pango)",
+      url      => 'http://strawberryperl.com/package/kmx/sdl/Win64_SDL-1.2.14-extended-bin_20100301.zip',
+      sha1sum  => '4576dfeb812450fce5bb22b915985ec696ea699f',
+      arch_re  => qr/^MSWin32-x64-multi-thread$/,
       os_re    => qr/^MSWin32$/,
       cc_re    => qr/gcc/,
     },
@@ -36,8 +45,11 @@ my $prebuilt_binaries = [
 
 #### tarballs with source codes
 my $source_packs = [
+## the first set for source code build will be a default option
   {
-    title   => 'Source code build SDL-1.2.14 + SDL_(image|mixer|ttf|net|gfx)',
+    title   => "Source code build: SDL-1.2.14 & co. (RECOMMENDED)\n" .
+               "\tbuilds: SDL, SDL_(image|mixer|ttf|net|gfx)\n" .
+	       "\tneeds preinstalled: libpng-devel, jpeg-devel, freetype2-devel",
     members     => [
       {
         pack => 'SDL',
@@ -85,8 +97,85 @@ my $source_packs = [
       },
     ],
   },
+## another src build set
+  {
+    title   => "Source code build: SDL-1.2.14 & co. + all prereq. libraries\n" .
+               "\tbuilds: zlib, jpeg, png, freetype, SDL, SDL_(image|mixer|ttf|net|gfx)",
+    members     => [
+      {
+        pack => 'zlib',
+        dirname => 'zlib-1.2.3',
+        url => 'http://www.zlib.net/zlib-1.2.3.tar.gz',
+        sha1sum  => '60faeaaf250642db5c0ea36cd6dcc9f99c8f3902',
+      },
+      {
+        pack => 'jpeg',
+        dirname => 'jpeg-7',
+        url => 'http://www.ijg.org/files/jpegsrc.v7.tar.gz',
+        sha1sum  => '88cced0fc3dbdbc82115e1d08abce4e9d23a4b47',
+        patches => [
+          'jpeg-7_cygwin.patch',
+        ],
+      },
+      {
+        pack => 'libpng',
+        dirname => 'libpng-1.2.40',
+        url => 'http://downloads.sourceforge.net/libpng/libpng-1.2.40.tar.gz',
+        sha1sum  => 'a3f2df01871da15d66f103a5b4e793601e4d1043',
+      },
+      {
+        pack => 'freetype',
+        dirname => 'freetype-2.3.11',
+        url => 'http://mirror.lihnidos.org/GNU/savannah/freetype/freetype-2.3.11.tar.gz',
+        sha1sum  => 'e8627804a5230594ec2327ab8caf25b0d05b9a31',
+      },
+      {
+        pack => 'SDL',
+        dirname => 'SDL-1.2.14',
+        url => 'http://www.libsdl.org/release/SDL-1.2.14.tar.gz',
+        sha1sum  => 'ba625b4b404589b97e92d7acd165992debe576dd',
+        patches => [
+          'test1.patch',
+        ],
+      },
+      {
+        pack => 'SDL_image',
+        dirname => 'SDL_image-1.2.10',
+        url => 'http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.10.tar.gz',
+        sha1sum  => '6bae71fdfd795c3dbf39f6c7c0cf8b212914ef97',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_mixer',
+        dirname => 'SDL_mixer-1.2.11',
+        url => 'http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.11.tar.gz',
+        sha1sum  => 'ef5d45160babeb51eafa7e4019cec38324ee1a5d',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_ttf',
+        dirname => 'SDL_ttf-2.0.9',
+        url => 'http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.9.tar.gz',
+        sha1sum  => '6bc3618b08ddbbf565fe8f63f624782c15e1cef2',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_net',
+        dirname => 'SDL_net-1.2.7',
+        url => 'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
+        sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_gfx',
+        dirname => 'SDL_gfx-2.0.20',
+        url => 'http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.20.tar.gz',
+        sha1sum  => '077f7e64376c50a424ef11a27de2aea83bda3f78',
+        patches => [ ],
+      },
+    ],
+  },
 ];
-
 
 sub check_config_script
 {

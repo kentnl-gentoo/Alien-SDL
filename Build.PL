@@ -26,6 +26,7 @@ my $build = $package->new(
   all_from             => 'lib/Alien/SDL.pm',
   dist_abstract        => 'Get, Build and Use SDL libraries',
   dist_author	       => 'Kartik Thakore <KTHAKORE@cpan.org>',
+  license              => 'perl',
   requires             => {
     'File::Spec'       => '0',
     'File::Temp'       => '0',
@@ -56,6 +57,7 @@ my $build = $package->new(
       repository => 'http://github.com/kthakore/Alien_SDL'
     }
   },
+  create_readme => 1,
   share_dir => 'sharedir',
   # sharedir is used for storing compiled/prebuilt binaries of SDL lib + related libraries
   # avoid using 'share' name as M::B doe not handle well paths like /xx/yy/share/zz/ww/share/xx
@@ -106,7 +108,7 @@ push @candidates, { title => 'Quit installation' };
 my $i = 1;
 my $prompt_string = "\nYou have the following options:\n";
 foreach my $c (@candidates) {
-  $prompt_string .= "[" . $i++ . "] Use: " . $c->{title} . "\n"
+  $prompt_string .= "[" . $i++ . "] " . $c->{title} . "\n"
 }
 $prompt_string .= "\nWhat way do you wanna go?";
 my $ans = $build->prompt($prompt_string, 1);
