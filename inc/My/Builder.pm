@@ -52,13 +52,13 @@ sub ACTION_code {
     $self->config_data('build_os', $^O);
     $self->config_data('script', '');            # just to be sure
     $self->config_data('config', {});            # just to be sure
-    $self->config_data('additional_cflafs', ''); # just to be sure
+    $self->config_data('additional_cflags', ''); # just to be sure
     $self->config_data('additional_libs', '');   # just to be sure
 
     if($bp->{buildtype} eq 'use_config_script') {
       $self->config_data('script', $bp->{script});
       # include path trick - adding couple of addititonal locations
-      $self->config_data('additional_cflafs', '-I'.$bp->{prefix}.'/include/smpeg '.
+      $self->config_data('additional_cflags', '-I'.$bp->{prefix}.'/include/smpeg '.
                                               '-I'.$bp->{prefix}.'/include ' .
                                               $self->get_additional_cflags);
       $self->config_data('additional_libs', $self->get_additional_libs);
@@ -207,28 +207,28 @@ sub set_config_data {
     $tmp{ catpath($v, $d, '') } = 1;
     # available shared libs detection
     if ($f =~ /smpeg/) {
-      $shlib_map{smpeg} = $full;
+      $shlib_map{smpeg} = $full unless $shlib_map{smpeg};
     }
     elsif ($f =~ /^(lib)?(png12)/) {
-      $shlib_map{png12} = $full;
+      $shlib_map{png12} = $full unless $shlib_map{png12};
     }
     elsif ($f =~ /^(lib)?(tiff|jpeg|png)[^a-zA-Z]/) {
-      $shlib_map{$2} = $full;
+      $shlib_map{$2} = $full unless $shlib_map{$2};
     }
     elsif ($f =~ /^(lib)?(SDL_[a-zA-Z]{2,8})[^a-zA-Z0-9]/) {
       # sort of dark magic how to detect SDL_<something> related shlib
-      $shlib_map{$2} = $full;
+      $shlib_map{$2} = $full unless $shlib_map{$2};
     }
     elsif ($f =~ /^(lib)?(SDL)/) {
       # '*SDL*' that did not pass previous test is probably core 'SDL'
-      $shlib_map{SDL} = $full;
+      $shlib_map{SDL} = $full unless $shlib_map{SDL};
     }
   };
   $cfg->{ld_paths} = [ keys %tmp ];
   $cfg->{ld_shlib_map} = \%shlib_map;
 
   # write config
-  $self->config_data('additional_cflafs', '-I@PrEfIx@/include ' .
+  $self->config_data('additional_cflags', '-I@PrEfIx@/include ' .
                                           '-I@PrEfIx@/include/smpeg ' .
                                           $self->get_additional_cflags);
   $self->config_data('additional_libs', $self->get_additional_libs);

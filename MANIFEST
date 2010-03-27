@@ -9,6 +9,7 @@ LICENSE
 MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
+patches/jpeg-8a_cygwin.patch
 patches/test1.patch
 README
 t/001_load.t
