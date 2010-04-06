@@ -1,5 +1,16 @@
 Revision history for Perl module Alien::SDL
 
+1.2
+     - build_requires fixed (now contains also modules needed for ./Build test)
+     - Win32 patch - proper handling of spaces in dirname [FROGGS]
+     - Better detection of patch utility (now works with old patch on bsd systems) [kmx]
+     - GNU make autodetection (on bsd systems make!=GNU-make) [kmx]
+     - SDL_Pango special patch now defines SDL_PANGO_FB [kthakore]
+     - more diagnostics in t/001_load.t
+     - improved patching mechanism (better CRLF/LF handling) [FROGGS]
+     - Win/32bit binaries (with SDL_Pango patch) [FROGGS]
+     - MacOSx file find bug fixed
+
 1.1
      - Powerpc fixes [ioanrogers]
      - fix for many failing MacOS CPAN tester reports [kmx]

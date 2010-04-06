@@ -10,6 +10,7 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
 patches/jpeg-8a_cygwin.patch
+patches/SDL_Pango-0.1.2-API-adds.patch
 patches/test1.patch
 README
 t/001_load.t

@@ -58,8 +58,8 @@ sub ACTION_code {
     if($bp->{buildtype} eq 'use_config_script') {
       $self->config_data('script', $bp->{script});
       # include path trick - adding couple of addititonal locations
-      $self->config_data('additional_cflags', '-I'.$bp->{prefix}.'/include/smpeg '.
-                                              '-I'.$bp->{prefix}.'/include ' .
+      $self->config_data('additional_cflags', '-I' . get_path($bp->{prefix} . '/include/smpeg') . ' '.
+                                              '-I' . get_path($bp->{prefix} . '/include') . ' ' .
                                               $self->get_additional_cflags);
       $self->config_data('additional_libs', $self->get_additional_libs);
     }
@@ -148,7 +148,19 @@ sub extract_sources {
       my $ae = Archive::Extract->new( archive => $archive );
       die "###ERROR###: cannot extract $pack ", $ae->error unless $ae->extract(to => $build_src);
       foreach my $i (@{$pack->{patches}}) {
-        chdir catfile($build_src, $pack->{dirname});
+        chdir $srcdir;
+        print "Checking affected files for patch '$i'\n";
+        foreach my $k ($self->patch_get_affected_files($srcdir, catfile($patches, $i))) {
+		  # doing the same like -p1 for 'patch'
+		  $k =~ s/^[^\/]*\/(.*)$/$1/;
+          if(-e $k) {
+			print "Preparing file '$k'\n";
+            sed_inplace( $k, 's/\r\n/\n/gm' ); # converting to UNIX newlines
+          }
+		  else {
+		    print "###WARN### file '$k' for patch '$i' not found\n";
+		  }
+        }
         print "Applying patch '$i'\n";
         my $cmd = $self->patch_command($srcdir, catfile($patches, $i));
         if ($cmd) {
@@ -175,8 +187,8 @@ sub set_config_data {
     # defaults
     version     => $version,
     prefix      => '@PrEfIx@',
-    libs        => '-L@PrEfIx@/lib -lSDLmain -lSDL',
-    cflags      => '-I@PrEfIx@/include/SDL -D_GNU_SOURCE=1 -Dmain=SDL_main',
+    libs        => '-L' . $self->get_path('@PrEfIx@/lib') . ' -lSDLmain -lSDL',
+    cflags      => '-I' . $self->get_path('@PrEfIx@/include/SDL') . ' -D_GNU_SOURCE=1 -Dmain=SDL_main',
     shared_libs => [ ],
   };
 
@@ -190,6 +202,18 @@ sub set_config_data {
       $o =~ s/[\r\n]*$//;
       $o =~ s/\Q$prefix\E/\@PrEfIx\@/g;
       $cfg->{$p} = $o;
+    }
+  }
+
+  # find ld_shared_libs and create symlinks if necessary
+  my $symlink_exists = eval { symlink("",""); 1 };
+  if($symlink_exists)
+  {
+    my @shlibs_ = find_file($build_out, qr/\.\Q$Config{dlext}\E[\d\.]+$/);
+    foreach my $full (@shlibs_){
+      $full =~ qr/(.*\.\Q$Config{dlext}\E)[\d\.]+$/;
+      my ($v, $d, $f) = splitpath($full);
+      symlink("./$f", $1) unless -e $1;
     }
   }
 
@@ -228,8 +252,8 @@ sub set_config_data {
   $cfg->{ld_shlib_map} = \%shlib_map;
 
   # write config
-  $self->config_data('additional_cflags', '-I@PrEfIx@/include ' .
-                                          '-I@PrEfIx@/include/smpeg ' .
+  $self->config_data('additional_cflags', '-I' . $self->get_path('@PrEfIx@/include') . ' ' .
+                                          '-I' . $self->get_path('@PrEfIx@/include/smpeg') . ' ' .
                                           $self->get_additional_cflags);
   $self->config_data('additional_libs', $self->get_additional_libs);
   $self->config_data('config', $cfg);
@@ -257,6 +281,12 @@ sub get_additional_libs {
   # this needs to be overriden in My::Builder::<platform>
   my $self = shift;
   return '';
+}
+
+sub get_path {
+  # this needs to be overriden in My::Builder::<platform>
+  my ( $self, $path ) = @_;
+  return $path;
 }
 
 sub clean_dir {
@@ -298,16 +328,28 @@ sub check_sha1sum {
 
 sub patch_command {
   my( $self, $base_dir, $patch_file ) = @_;
+  
+  print("patch_command: $base_dir, $patch_file\n");
+  
   my $devnull = File::Spec->devnull();
-  my $test = `patch --help 2> $devnull`;
-  if ($test) {
+  my $patch_rv = system("patch -v > $devnull 2>&1");
+  if ($patch_rv == 0) {
     $patch_file = File::Spec->abs2rel( $patch_file, $base_dir );
     # the patches are expected with UNIX newlines
     # the following command works on both UNIX+Windows
-    return qq("$^X" -pe0 -- "$patch_file" | patch -p1);
+	return qq("$^X" -pe0 -- "$patch_file" | patch -p1); # paths of files to patch should be relative to build_src
   }
   warn "###WARN### patch not available";
   return '';
+}
+
+sub patch_get_affected_files {
+  my( $self, $base_dir, $patch_file ) = @_;
+  $patch_file = File::Spec->abs2rel( $patch_file, $base_dir );
+  open(DAT, $patch_file) or die "###ERROR### Cannot open file: '$patch_file'\n";
+  my @affected_files = map{$_ =~ /^---\s*([\S]+)/} <DAT>;
+  close(DAT);
+  return @affected_files;
 }
 
 1;
