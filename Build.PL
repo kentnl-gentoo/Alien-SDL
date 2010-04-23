@@ -19,7 +19,7 @@ my $build = $package->new(
   module_name          => 'Alien::SDL',
   all_from             => 'lib/Alien/SDL.pm',
   dist_abstract        => 'Get, Build and Use SDL libraries',
-  dist_author	       => 'Kartik Thakore <KTHAKORE@cpan.org>',
+  dist_author          => 'Kartik Thakore <KTHAKORE@cpan.org>',
   license              => 'perl',
   requires             => {
     'File::Spec'       => '0',
@@ -89,28 +89,31 @@ if(defined($ENV{SDL_INST_DIR})) {
   }
 }
 
-if($rv=check_config_script("sdl-config")) {
-  push @candidates, $rv;
-};
+# we don't know how they are compiled, so we are compiling our own
+#if($rv=check_config_script("sdl-config")) {
+#  push @candidates, $rv;
+#};
 
 if($rv=check_prebuilt_binaries($build->os_type)) {
   push @candidates, @{$rv};
 };
 
-if(($rv=check_src_build($build->os_type)) && $build->can_build_binaries_from_sources()) {
+if($build->can_build_binaries_from_sources() && ($rv=check_src_build($build->os_type))) {
   push @candidates, @{$rv};
 };
 
 push @candidates, { title => 'Quit installation' };
 
 #### ask user what way to go
-my $i = 1;
-my $prompt_string = "\nYou have the following options:\n";
+my $i                     = 1;
+my $prompt_string         = "\nYou have the following options:\n";
+my $recommended_candidate = 1;
 foreach my $c (@candidates) {
-  $prompt_string .= "[" . $i++ . "] " . $c->{title} . "\n"
+  $recommended_candidate = $i if $c->{title} =~ /RECOMMENDED/;
+  $prompt_string        .= "[" . $i++ . "] " . $c->{title} . "\n"
 }
 $prompt_string .= "\nWhat way do you wanna go?";
-my $ans = $build->prompt($prompt_string, 1);
+my $ans = $build->prompt($prompt_string, $recommended_candidate);
 
 #### store build params into 'notes'
 if(($ans>0) && ($ans<scalar(@candidates))) {

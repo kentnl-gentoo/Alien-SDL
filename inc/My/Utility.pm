@@ -48,61 +48,15 @@ my $source_packs = [
 ## the first set for source code build will be a default option
   {
     title   => "Source code build: SDL-1.2.14 & co. (RECOMMENDED)\n" .
-               "\tbuilds: SDL, SDL_(image|mixer|ttf|net|gfx)\n" .
-	       "\tneeds preinstalled: libpng-devel, jpeg-devel, freetype2-devel",
-    members     => [
-      {
-        pack => 'SDL',
-        dirname => 'SDL-1.2.14',
-        url => 'http://www.libsdl.org/release/SDL-1.2.14.tar.gz',
-        sha1sum  => 'ba625b4b404589b97e92d7acd165992debe576dd',
-        patches => [
-          'test1.patch',
-        ],
-      },
-      {
-        pack => 'SDL_image',
-        dirname => 'SDL_image-1.2.10',
-        url => 'http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.10.tar.gz',
-        sha1sum  => '6bae71fdfd795c3dbf39f6c7c0cf8b212914ef97',
-        patches => [ ],
-      },
-      {
-        pack => 'SDL_mixer',
-        dirname => 'SDL_mixer-1.2.11',
-        url => 'http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.11.tar.gz',
-        sha1sum  => 'ef5d45160babeb51eafa7e4019cec38324ee1a5d',
-        patches => [ ],
-      },
-      {
-        pack => 'SDL_ttf',
-        dirname => 'SDL_ttf-2.0.9',
-        url => 'http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.9.tar.gz',
-        sha1sum  => '6bc3618b08ddbbf565fe8f63f624782c15e1cef2',
-        patches => [ ],
-      },
-      {
-        pack => 'SDL_net',
-        dirname => 'SDL_net-1.2.7',
-        url => 'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
-        sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
-        patches => [ ],
-      },
-      {
-        pack => 'SDL_gfx',
-        dirname => 'SDL_gfx-2.0.20',
-        url => 'http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.20.tar.gz',
-        sha1sum  => '077f7e64376c50a424ef11a27de2aea83bda3f78',
-        patches => [ ],
-      },
-    ],
-  },
-## another src build set (incl. PANGO SUPPORT)
-  {
-    title   => "Source code build: SDL-1.2.14 & co. (PANGO SUPPORT)\n" .
                "\tbuilds: SDL, SDL_(image|mixer|ttf|net|gfx|Pango)\n" .
-	       "\tneeds preinstalled: (libpng|jpeg|freetype2|pango)-devel\n" .
-               "\tNOTE: uses unofficial SDL_ttf-2.0.10!!!" ,
+               "\tneeds preinstalled: (freetype2|pango)-devel\n" .
+               "\tNOTE: uses unofficial SDL_ttf-2.0.10!!!",
+    prereqs => {
+        libs => [
+          'pthread', # SDL
+          'pangoft2', 'pango', 'gobject', 'gmodule', 'glib', 'fontconfig', 'freetype', 'expat', # SDL_Pango
+        ]
+    },
     members     => [
       {
         pack => 'SDL',
@@ -112,6 +66,26 @@ my $source_packs = [
         patches => [
           'test1.patch',
         ],
+      },
+      {
+        pack => 'jpeg',
+        dirname => 'jpeg-8a',
+        url => 'http://www.ijg.org/files/jpegsrc.v8a.tar.gz',
+        sha1sum  => '78077fb22f0b526a506c21199fbca941d5c671a9',
+        patches => [ 'jpeg-8a_cygwin.patch' ],
+      },
+      {
+        pack => 'tiff',
+        dirname => 'tiff-3.9.1',
+        url => 'ftp://ftp.remotesensing.org/pub/libtiff/tiff-3.9.1.tar.gz',
+        sha1sum  => '675ad1977023a89201b80cd5cd4abadea7ba0897',
+        patches => [ ],
+      },
+      {
+        pack => 'libpng',
+        dirname => 'libpng-1.4.1',
+        url => 'http://downloads.sourceforge.net/libpng/libpng-1.4.1.tar.gz',
+        sha1sum  => '7a3488f5844068d67074f2507dd8a7ed9c69ff04',
       },
       {
         pack => 'SDL_image',
@@ -157,16 +131,26 @@ my $source_packs = [
       },
     ],
   },
-## another src build set (all from sources)
+## another src build set (without PANGO SUPPORT)
   {
-    title   => "Source code build: SDL-1.2.14 & co. + all prereq. libraries\n" .
-               "\tbuilds: zlib, jpeg, png, freetype, SDL, SDL_(image|mixer|ttf|net|gfx)",
+    title   => "Source code build: SDL-1.2.14 & co. (NO PANGO)\n" .
+               "\tbuilds: SDL, SDL_(image|mixer|ttf|net|gfx)\n" .
+               "\tneeds preinstalled: freetype2-devel",
+    prereqs => {
+        libs => [
+          'pthread',  # SDL
+          'freetype', # SDL_ttf
+        ]
+    },
     members     => [
       {
-        pack => 'zlib',
-        dirname => 'zlib-1.2.4',
-        url => 'http://www.zlib.net/zlib-1.2.4.tar.gz',
-        sha1sum  => '22965d40e5ca402847f778d4d10ce4cba17459d1',
+        pack => 'SDL',
+        dirname => 'SDL-1.2.14',
+        url => 'http://www.libsdl.org/release/SDL-1.2.14.tar.gz',
+        sha1sum  => 'ba625b4b404589b97e92d7acd165992debe576dd',
+        patches => [
+          'test1.patch',
+        ],
       },
       {
         pack => 'jpeg',
@@ -174,6 +158,87 @@ my $source_packs = [
         url => 'http://www.ijg.org/files/jpegsrc.v8a.tar.gz',
         sha1sum  => '78077fb22f0b526a506c21199fbca941d5c671a9',
         patches => [ 'jpeg-8a_cygwin.patch' ],
+      },
+      {
+        pack => 'tiff',
+        dirname => 'tiff-3.9.1',
+        url => 'ftp://ftp.remotesensing.org/pub/libtiff/tiff-3.9.1.tar.gz',
+        sha1sum  => '675ad1977023a89201b80cd5cd4abadea7ba0897',
+        patches => [ ],
+      },
+      {
+        pack => 'libpng',
+        dirname => 'libpng-1.4.1',
+        url => 'http://downloads.sourceforge.net/libpng/libpng-1.4.1.tar.gz',
+        sha1sum  => '7a3488f5844068d67074f2507dd8a7ed9c69ff04',
+      },
+      {
+        pack => 'SDL_image',
+        dirname => 'SDL_image-1.2.10',
+        url => 'http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.10.tar.gz',
+        sha1sum  => '6bae71fdfd795c3dbf39f6c7c0cf8b212914ef97',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_mixer',
+        dirname => 'SDL_mixer-1.2.11',
+        url => 'http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.11.tar.gz',
+        sha1sum  => 'ef5d45160babeb51eafa7e4019cec38324ee1a5d',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_ttf',
+        dirname => 'SDL_ttf-2.0.9',
+        url => 'http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.9.tar.gz',
+        sha1sum  => '6bc3618b08ddbbf565fe8f63f624782c15e1cef2',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_net',
+        dirname => 'SDL_net-1.2.7',
+        url => 'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
+        sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_gfx',
+        dirname => 'SDL_gfx-2.0.20',
+        url => 'http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.20.tar.gz',
+        sha1sum  => '077f7e64376c50a424ef11a27de2aea83bda3f78',
+        patches => [ ],
+      },
+    ],
+  },
+## another src build set (all from sources)
+  {
+    title   => "Source code build: SDL-1.2.14 & co. + all prereq. libraries\n" .
+               "\tbuilds: zlib, jpeg, tiff, png, freetype, SDL, SDL_(image|mixer|ttf|net|gfx)",
+    prereqs => {
+        libs => [
+          'pthread', # SDL
+          'tiff',    # SDL_image
+        ]
+    },
+    members     => [
+      {
+        pack => 'zlib',
+        dirname => 'zlib-1.2.5',
+        url => 'http://zlib.net/zlib-1.2.5.tar.gz',
+        sha1sum  => '8e8b93fa5eb80df1afe5422309dca42964562d7e',
+      },
+      {
+        pack => 'jpeg',
+        dirname => 'jpeg-8a',
+        url => 'http://www.ijg.org/files/jpegsrc.v8a.tar.gz',
+        sha1sum  => '78077fb22f0b526a506c21199fbca941d5c671a9',
+        patches => [ 'jpeg-8a_cygwin.patch' ],
+      },
+      {
+        pack => 'tiff',
+        dirname => 'tiff-3.9.1',
+        url => 'ftp://ftp.remotesensing.org/pub/libtiff/tiff-3.9.1.tar.gz',
+        sha1sum  => '675ad1977023a89201b80cd5cd4abadea7ba0897',
+        patches => [ ],
       },
       {
         pack => 'libpng',
@@ -277,10 +342,54 @@ sub check_src_build
 {
   print "Gonna check possibility for building from sources ...\n";
   print "(os=$^O cc=$Config{cc})\n";
+  my @good = ();
   foreach my $p (@{$source_packs}) {
     $p->{buildtype} = 'build_from_sources';
+	push @good, $p if check_prereqs($p);
   }
-  return $source_packs;
+  return \@good;
+}
+
+sub check_prereqs_libs {
+  my @libs = @_;
+
+  for my $lib (@libs) {
+    my $found_lib          = '';
+    my $found_inc          = '';
+    my $inc_lib_candidates = {
+      '/usr/local/include' => '/usr/local/lib',
+      '/usr/include'       => '/usr/lib',
+    };
+	my $header_map         = {
+	  'z'    => 'zlib',
+	  'jpeg' => 'jpeglib',
+	};
+	my $header             = (defined $header_map->{$lib}) ? $header_map->{$lib} : $lib;
+
+    foreach (keys %$inc_lib_candidates) {
+	  my $ld = $inc_lib_candidates->{$_};
+      next unless -d $_ && -d $ld;
+      ($found_lib) = find_file($ld, qr/[\/\\]lib\Q$lib\E[\-\d\.]*\.\Q$Config{dlext}\E[\d\.]*$/);
+      ($found_inc) = find_file($_,  qr/[\/\\]\Q$header\E[\-\d\.]*\.h$/);
+      last if $found_lib && $found_inc;
+    }
+	
+	if($found_lib && $found_inc) {
+      return 1;
+    }
+    else {
+      print "WARNING: required lib(-dev) '$lib' not found, disabling affected option\n";
+    }
+  }
+}
+
+sub check_prereqs {
+  my $bp  = shift;
+  my $ret = 1;
+  
+  $ret &= check_prereqs_libs(@{$bp->{prereqs}->{libs}}) if defined $bp->{prereqs}->{libs};
+  
+  return $ret;
 }
 
 sub find_file {
