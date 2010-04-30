@@ -15,11 +15,11 @@ Alien::SDL - building, finding and using SDL binaries
 
 =head1 VERSION
 
-Version 1.401
+Version 1.402
 
 =cut
 
-our $VERSION = '1.401';
+our $VERSION = '1.402';
 $VERSION = eval $VERSION;
 
 =head1 SYNOPSIS
@@ -217,9 +217,13 @@ sub check_header {
   my $cb = ExtUtils::CBuilder->new(quiet => 1);
   my ($fs, $src) = File::Temp->tempfile('XXXXaa', SUFFIX => '.c', UNLINK => 1);
   my $inc = '';
-  $inc .= "#include <$_>\n" for @header;  
+  my $i = 0;
+  foreach (@header) {
+    @header = (splice(@header, 0, $i) , 'stdio.h', splice(@header, $i)) if $_ eq 'jpeglib.h';
+    $i++;
+  }
+  $inc .= "#include <$_>\n" for @header;
   syswrite($fs, <<MARKER); # write test source code
-#include <stdio.h>
 #if defined(_WIN32) && !defined(__CYGWIN__)
 /* GL/gl.h on Win32 requires windows.h being included before */
 #include <windows.h>
