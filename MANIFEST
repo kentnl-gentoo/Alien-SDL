@@ -6,7 +6,7 @@ inc/My/Builder/Windows.pm
 inc/My/Utility.pm
 lib/Alien/SDL.pm
 LICENSE
-MANIFEST			This list of files
+MANIFEST
 MANIFEST.SKIP
 META.yml
 patches/jpeg-8a_cygwin.patch

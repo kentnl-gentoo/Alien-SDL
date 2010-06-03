@@ -5,12 +5,13 @@ use warnings;
 use base 'Module::Build';
 
 use lib "inc";
-use My::Utility qw(find_SDL_dir find_file sed_inplace);
+use My::Utility qw(find_SDL_dir find_file sed_inplace get_dlext);
 use File::Spec::Functions qw(catdir catfile splitpath catpath rel2abs abs2rel);
 use File::Path qw(make_path remove_tree);
 use File::Copy qw(cp);
 use File::Fetch;
 use File::Find;
+use File::ShareDir;
 use Archive::Extract;
 use Digest::SHA qw(sha1_hex);
 use Text::Patch;
@@ -29,6 +30,26 @@ sub ACTION_build {
   mkdir 'sharedir' unless(-d 'sharedir');
   $self->add_to_cleanup('sharedir');
   $self->SUPER::ACTION_build;
+}
+
+
+sub ACTION_install
+{
+ my $self = shift;
+ my $sharedir = '';
+ 
+ $sharedir = eval {File::ShareDir::dist_dir('Alien-SDL')};
+
+ if ( -d $sharedir )
+ {
+   print "Removing the old $sharedir \n";
+
+   remove_tree($sharedir);
+ }
+ 
+ mkdir($sharedir) unless(-d $sharedir);
+
+ $self->SUPER::ACTION_install;
 }
 
 sub ACTION_code {
@@ -218,20 +239,21 @@ sub set_config_data {
     }
   }
 
+  my $dlext = get_dlext();
   # find ld_shared_libs and create symlinks if necessary
   my $symlink_exists = eval { symlink("",""); 1 };
   if($symlink_exists)
   {
-    my @shlibs_ = find_file($build_out, qr/\.\Q$Config{dlext}\E[\d\.]+$/);
+    my @shlibs_ = find_file($build_out, qr/\.$dlext[\d\.]+$/);
     foreach my $full (@shlibs_){
-      $full =~ qr/(.*\.\Q$Config{dlext}\E)[\d\.]+$/;
+      $full =~ qr/(.*\.$dlext)[\d\.]+$/;
       my ($v, $d, $f) = splitpath($full);
       symlink("./$f", $1) unless -e $1;
     }
   }
 
   # find and set ld_shared_libs
-  my @shlibs = find_file($build_out, qr/\.\Q$Config{dlext}\E$/);
+  my @shlibs = find_file($build_out, qr/\.$dlext$/);
   my $p = rel2abs($prefix);
   $_ =~ s/^\Q$prefix\E/\@PrEfIx\@/ foreach (@shlibs);
   $cfg->{ld_shared_libs} = [ @shlibs ];
