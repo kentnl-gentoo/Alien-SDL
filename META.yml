@@ -34,7 +34,7 @@ name: Alien-SDL
 provides:
   Alien::SDL:
     file: lib/Alien/SDL.pm
-    version: 1.405
+    version: 1.406
 requires:
   ExtUtils::CBuilder: 0
   File::ShareDir: 1.00
@@ -44,4 +44,4 @@ resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Alien-SDL
   license: http://dev.perl.org/licenses/
   repository: http://github.com/kthakore/Alien_SDL
-version: 1.405
+version: 1.406
