@@ -566,6 +566,7 @@ sub check_src_build
   my @good = ();
   foreach my $p (@{$source_packs}) {
     $p->{buildtype} = 'build_from_sources';
+    print "CHECKING prereqs for:\n\t$p->{title}";
     push @good, $p if check_prereqs($p);
   }
   return \@good;
@@ -594,11 +595,10 @@ sub check_prereqs_libs {
     };
     my $header             = (defined $header_map->{$lib}) ? $header_map->{$lib} : $lib;
 
-    my $dlext = get_dlext();
     foreach (keys %$inc_lib_candidates) {
       my $ld = $inc_lib_candidates->{$_};
       next unless -d $_ && -d $ld;
-      ($found_lib) = find_file($ld, qr/[\/\\]lib\Q$lib\E[\-\d\.]*\.$dlext[\d\.]*$/);
+      ($found_lib) = find_file($ld, qr/[\/\\]lib\Q$lib\E[\-\d\.]*\.a$/);
       ($found_inc) = find_file($_,  qr/[\/\\]\Q$header\E[\-\d\.]*\.h$/);
       last if $found_lib && $found_inc;
     }
