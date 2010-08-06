@@ -1,5 +1,6 @@
 Build.PL
 Changes
+crap.tdy
 inc/My/Builder.pm
 inc/My/Builder/Unix.pm
 inc/My/Builder/Windows.pm
@@ -14,6 +15,7 @@ patches/SDL_Pango-0.1.2-API-adds.1.patch
 patches/SDL_Pango-0.1.2-API-adds.2.patch
 patches/test1.patch
 README
+sdl-config
 t/001_load.t
 t/002_config.t
 t/003_check_header.t
