@@ -1,5 +1,11 @@
 Revision history for Perl module Alien::SDL
 
+1.414  Tue Sep 28 2010
+     - new Win64 binaries [kmx]
+     - new repo URL http://github.com/PerlGameDev/Alien-SDL [kmx]
+     - Output of header testing is a one-liner now #203 [FROGGS]
+     - Removed SDL_net from build system as it isnt needed [FROGGS]
+
 1.413  Fri Aug 06 2010
      - Searching for lib<xxx>.dll.a libs (cygwin needs this) [kmx]
      - New src build set: SDL-1.2.14 & co. (builds only SDL+SDL_*) [kmx]

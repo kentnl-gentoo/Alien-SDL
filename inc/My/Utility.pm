@@ -40,13 +40,13 @@ my $prebuilt_binaries = [
       cc_re    => qr/gcc/,
     },
     {
-      title    => "Binaries Win/64bit SDL-1.2.14 (extended, 20100704) RECOMMENDED\n" .
+      title    => "Binaries Win/64bit SDL-1.2.14 (extended, 20100824) RECOMMENDED\n" .
                   "\t(gfx, image, mixer, net, smpeg, ttf, sound, svg, rtf, Pango)",
       url      => [
-        'http://strawberryperl.com/package/kmx/sdl/Win64_SDL-1.2.14-extended-bin_20100704.zip',	
-        'http://froggs.de/libsdl/Win64_SDL-1.2.14-extended-bin_20100704.zip',
+        'http://strawberryperl.com/package/kmx/sdl/Win64_SDL-1.2.14-extended-bin_20100824.zip',	
+        'http://froggs.de/libsdl/Win64_SDL-1.2.14-extended-bin_20100824.zip',
       ],
-      sha1sum  => 'f23a189867865729756b9e882b3dd32b628819c9',
+      sha1sum  => 'ccffb7218bcb17544ab00c8a1ae383422fe9586d',
       arch_re  => qr/^MSWin32-x64-multi-thread$/,
       os_re    => qr/^MSWin32$/,
       cc_re    => qr/gcc/,
@@ -58,7 +58,7 @@ my $source_packs = [
 ## the first set for source code build will be a default option
   {
     title   => "Source code build: SDL-1.2.14 & co. (RECOMMENDED)\n" .
-               "\tbuilds: SDL, SDL_(image|mixer|ttf|net|gfx|Pango)\n" .
+               "\tbuilds: SDL, SDL_(image|mixer|ttf|gfx|Pango)\n" .
                "\tneeds preinstalled: (freetype2|pango)-devel",
     prereqs => {
         libs => [
@@ -147,16 +147,16 @@ my $source_packs = [
         sha1sum  => '98f6518ec71d94b8ad303a197445e0991850b887',
         patches => [ ],
       },
-      {
-        pack => 'SDL_net',
-        dirname => 'SDL_net-1.2.7',
-        url => [
-          'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
-          'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
-        ],
-        sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
-        patches => [ ],
-      },
+      #{
+      #  pack => 'SDL_net',
+      #  dirname => 'SDL_net-1.2.7',
+      #  url => [
+      #    'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
+      #    'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
+      #  ],
+      #  sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
+      #  patches => [ ],
+      #},
       {
         pack => 'SDL_gfx',
         dirname => 'SDL_gfx-2.0.20',
@@ -185,12 +185,12 @@ my $source_packs = [
 ## another src set - builds just SDL+ SDL_* libs, all other prereq libs needs to be installed 
   {
     title   => "Source code build: SDL-1.2.14 & co. (builds only SDL+SDL_*)\n" .
-               "\tbuilds: SDL, SDL_(image|mixer|ttf|net|gfx|Pango)\n" .
+               "\tbuilds: SDL, SDL_(image|mixer|ttf|gfx|Pango)\n" .
                "\tneeds preinstalled: all non-SDL libs",
     prereqs => {
         libs => [
           'pthread', # SDL
-	  'z', 'jpeg', 'tiff', 'png',
+          'z', 'jpeg', 'tiff', 'png',
           'pangoft2', 'pango', 'gobject', 'gmodule', 'glib', 'fontconfig', 'freetype', 'expat', # SDL_Pango
         ]
     },
@@ -237,16 +237,16 @@ my $source_packs = [
         sha1sum  => '98f6518ec71d94b8ad303a197445e0991850b887',
         patches => [ ],
       },
-      {
-        pack => 'SDL_net',
-        dirname => 'SDL_net-1.2.7',
-        url => [
-          'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
-          'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
-        ],
-        sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
-        patches => [ ],
-      },
+      #{
+      #  pack => 'SDL_net',
+      #  dirname => 'SDL_net-1.2.7',
+      #  url => [
+      #    'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
+      #    'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
+      #  ],
+      #  sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
+      #  patches => [ ],
+      #},
       {
         pack => 'SDL_gfx',
         dirname => 'SDL_gfx-2.0.20',
@@ -275,7 +275,7 @@ my $source_packs = [
 ## another src build set (without PANGO SUPPORT)
   {
     title   => "Source code build: SDL-1.2.14 & co. (no PANGO, but TTF)\n" .
-               "\tbuilds: SDL, SDL_(image|mixer|ttf|net|gfx)\n" .
+               "\tbuilds: SDL, SDL_(image|mixer|ttf|gfx)\n" .
                "\tneeds preinstalled: freetype2-devel",
     prereqs => {
         libs => [
@@ -364,16 +364,16 @@ my $source_packs = [
         sha1sum  => '98f6518ec71d94b8ad303a197445e0991850b887',
         patches => [ ],
       },
-      {
-        pack => 'SDL_net',
-        dirname => 'SDL_net-1.2.7',
-        url => [
-          'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
-          'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
-        ],
-        sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
-        patches => [ ],
-      },
+      #{
+      #  pack => 'SDL_net',
+      #  dirname => 'SDL_net-1.2.7',
+      #  url => [
+      #    'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
+      #    'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
+      #  ],
+      #  sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
+      #  patches => [ ],
+      #},
       {
         pack => 'SDL_gfx',
         dirname => 'SDL_gfx-2.0.20',
@@ -389,7 +389,7 @@ my $source_packs = [
 ## another src build set (without PANGO/TTF SUPPORT)
   {
     title   => "Source code build: SDL-1.2.14 & co. (no PANGO, no TTF)\n" .
-               "\tbuilds: SDL, SDL_(image|mixer|net|gfx)",
+               "\tbuilds: SDL, SDL_(image|mixer|gfx)",
     prereqs => {
         libs => [
           'pthread',  # SDL
@@ -466,16 +466,16 @@ my $source_packs = [
         sha1sum  => 'ef5d45160babeb51eafa7e4019cec38324ee1a5d',
         patches => [ ],
       },
-      {
-        pack => 'SDL_net',
-        dirname => 'SDL_net-1.2.7',
-        url => [
-          'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
-          'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
-        ],
-        sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
-        patches => [ ],
-      },
+      #{
+      #  pack => 'SDL_net',
+      #  dirname => 'SDL_net-1.2.7',
+      #  url => [
+      #    'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
+      #    'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
+      #  ],
+      #  sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
+      #  patches => [ ],
+      #},
       {
         pack => 'SDL_gfx',
         dirname => 'SDL_gfx-2.0.20',
@@ -491,7 +491,7 @@ my $source_packs = [
 ## another src build set (all from sources)
   {
     title   => "Source code build: SDL-1.2.14 & co. + all prereq. libraries\n" .
-               "\tbuilds: zlib, jpeg, tiff, png, freetype, SDL, SDL_(image|mixer|ttf|net|gfx)",
+               "\tbuilds: zlib, jpeg, tiff, png, freetype, SDL, SDL_(image|mixer|ttf|gfx)",
     prereqs => {
         libs => [
           'pthread', # SDL
@@ -587,16 +587,16 @@ my $source_packs = [
         sha1sum  => '98f6518ec71d94b8ad303a197445e0991850b887',
         patches => [ ],
       },
-      {
-        pack => 'SDL_net',
-        dirname => 'SDL_net-1.2.7',
-        url => [
-          'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
-          'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
-        ],
-        sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
-        patches => [ ],
-      },
+      #{
+      #  pack => 'SDL_net',
+      #  dirname => 'SDL_net-1.2.7',
+      #  url => [
+      #    'http://www.libsdl.org/projects/SDL_net/release/SDL_net-1.2.7.tar.gz',
+      #    'http://froggs.de/libsdl/SDL_net-1.2.7.tar.gz',
+      #  ],
+      #  sha1sum  => 'b46c7e3221621cc34fec1238f1b5f0ce8972274d',
+      #  patches => [ ],
+      #},
       {
         pack => 'SDL_gfx',
         dirname => 'SDL_gfx-2.0.20',

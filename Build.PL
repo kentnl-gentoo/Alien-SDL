@@ -26,6 +26,7 @@ my $build = $package->new(
     'File::Temp'       => '0',
     'File::ShareDir'   => '0',
     'ExtUtils::CBuilder' => '0',
+    'Capture::Tiny'    => '0',
   },
   build_requires       => {  #need to have for running: ./Build (install|test)
     'File::Spec'       => '0',
@@ -56,7 +57,7 @@ my $build = $package->new(
   meta_merge => {
     resources  => {
       bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Alien-SDL',
-      repository => 'http://github.com/kthakore/Alien_SDL'
+      repository => 'http://github.com/PerlGameDev/Alien-SDL'
     }
   },
   create_readme => 1,
