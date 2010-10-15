@@ -47,6 +47,10 @@ sub get_additional_libs {
 
 sub can_build_binaries_from_sources {
   my $self = shift;
+  if($^O eq 'darwin' && !check_header($self->get_additional_cflags, 'X11/Xlib.h')) {
+    print "WARNING: required header 'X11/Xlib.h' not found, try installing the X11 SDK\n";
+    return 0;
+  }
   return 1; # yes we can
 }
 
@@ -126,6 +130,11 @@ sub _get_configure_cmd {
   if(($pack eq 'SDL') && ($^O eq 'cygwin')) {
     # kmx experienced troubles while cygwin build when nasm was present in PATH
     $extra .= " --disable-nasm";
+  }
+
+  if($pack eq 'jpeg') {
+    # otherwise libtiff will complain about invalid version number on dragonflybsd
+    $extra .= " --disable-ld-version-script";
   }
 
   ### This was intended as a fix for http://www.cpantesters.org/cpan/report/7064012
