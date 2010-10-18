@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::SDL
 
+1.418_2  Mon Oct 18 2010
+     - patch for ldconfig on BSD [FROGGS]
+     - experimental test for X11/Xlib.h on darwin, disable X if missing [FROGGS]
+     - disabling any warning for file_find() for perl-5.6.2 [FROGGS]
+
 1.418_1  Fri Oct 15 2010
      - fixed 'invalid version'-error for libtiff [FROGGS]
      - experimental test for X11/Xlib.h on darwin [FROGGS]

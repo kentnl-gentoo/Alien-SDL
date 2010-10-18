@@ -9,6 +9,7 @@ LICENSE
 MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
+OpenBSD.txt
 patches/jpeg-8a_cygwin.patch
 patches/SDL_Pango-0.1.2-API-adds.1.patch
 patches/SDL_Pango-0.1.2-API-adds.2.patch
@@ -16,6 +17,7 @@ patches/SDL_Pango-0.1.2-config-tools.1.patch
 patches/SDL_Pango-0.1.2-config-tools.2.patch
 patches/SDL_Pango-0.1.2-config-tools.3.patch
 patches/test1.patch
+patches/zlib-1.2.5-bsd-ldconfig.patch
 README
 t/001_load.t
 t/002_config.t
