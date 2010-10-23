@@ -5,7 +5,7 @@ use warnings;
 use base 'My::Builder';
 
 use File::Spec::Functions qw(catdir catfile rel2abs);
-use My::Utility qw(check_header check_prereqs_libs);
+use My::Utility qw(check_header check_prereqs_libs check_prereqs_tools);
 use Config;
 
 my $inc_lib_candidates = {
@@ -61,6 +61,9 @@ sub build_binaries {
     elsif($pack->{pack} =~ m/^(SDL_mixer)$/ && !$self->_is_gnu_make($self->_get_make)) {
       print "SKIPPING package '" . $pack->{dirname} . "' (GNU Make needed)...\n";
     }
+    elsif($pack->{pack} =~ m/^(SDL_Pango)$/ && !check_prereqs_tools('pkg-config')) {
+      print "SKIPPING package '" . $pack->{dirname} . "' (pkg-config needed)...\n";
+    }
     else {
       print "BUILDING package '" . $pack->{dirname} . "'...\n";
       my $srcdir = catfile($build_src, $pack->{dirname});
@@ -71,12 +74,19 @@ sub build_binaries {
 
       # do './configure ...'
       my $run_configure = 'y';
-      $run_configure = $self->prompt("Run ./configure for '$pack->{pack}' again?", "n") if (-f "config.status");
+      $run_configure = $self->prompt("Run ./configure for '$pack->{pack}' again?", "y") if (-f "config.status");
       if (lc($run_configure) eq 'y') {
         my $cmd = $self->_get_configure_cmd($pack->{pack}, $prefixdir);
-        print "Configuring $pack->{pack}...\n";
+        print "Configuring package '$pack->{pack}'...\n";
         print "(cmd: $cmd)\n";
-        $self->do_system($cmd) or die "###ERROR### [$?] during ./configure ... ";
+        unless($self->do_system($cmd)) {
+          if(-f "config.log" && open(CONFIGLOG, "<config.log")) {
+            print "config.log:\n";
+            print while <CONFIGLOG>;
+            close(CONFIGLOG);
+          }
+          die "###ERROR### [$?] during ./configure for package '$pack->{pack}'...";
+        }
       }
 
       # do 'make install'
@@ -110,7 +120,7 @@ sub _get_configure_cmd {
     $extra .= ' --disable-video-ps3';
   }
 
-  if($^O eq 'darwin' && !check_header($self->get_additional_cflags, 'X11/Xlib.h')) {
+  if($pack eq 'SDL' && $^O eq 'darwin' && !check_header($self->get_additional_cflags, 'X11/Xlib.h')) {
     $extra .= ' --without-x';
   }
 

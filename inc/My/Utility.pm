@@ -3,11 +3,12 @@ use strict;
 use warnings;
 use base qw(Exporter);
 
-our @EXPORT_OK = qw(check_config_script check_prebuilt_binaries check_prereqs_libs check_src_build find_SDL_dir find_file check_header sed_inplace get_dlext);
+our @EXPORT_OK = qw(check_config_script check_prebuilt_binaries check_prereqs_libs check_prereqs_tools check_src_build find_SDL_dir find_file check_header sed_inplace get_dlext);
 use Config;
 use ExtUtils::CBuilder;
 use File::Spec::Functions qw(splitdir catdir splitpath catpath rel2abs);
 use File::Find qw(find);
+use File::Which;
 use File::Copy qw(cp);
 use Cwd qw(realpath);
 
@@ -736,6 +737,25 @@ sub check_prereqs {
   my $ret = 1;
 
   $ret &= check_prereqs_libs(@{$bp->{prereqs}->{libs}}) if defined $bp->{prereqs}->{libs};
+
+  return $ret;
+}
+
+sub check_prereqs_tools {
+  my @tools = @_;
+  my $ret  = 1;
+
+  foreach my $tool (@tools) {
+    
+    if(-x File::Which::which($tool)
+    || ('pkg-config' eq $tool && defined $ENV{PKG_CONFIG} && $ENV{PKG_CONFIG} && -x File::Which::which($ENV{PKG_CONFIG}))) {
+      $ret &= 1;
+    }
+    else {
+      print "WARNING: required '$tool' not found\n";
+      $ret = 0;
+    }
+  }
 
   return $ret;
 }
