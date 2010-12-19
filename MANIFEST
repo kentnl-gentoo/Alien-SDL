@@ -10,6 +10,7 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
 patches/jpeg-8a_cygwin.patch
+patches/SDL-1.2.14-openbsd-rldflags.patch
 patches/SDL_Pango-0.1.2-API-adds.1.patch
 patches/SDL_Pango-0.1.2-API-adds.2.patch
 patches/SDL_Pango-0.1.2-config-tools.1.patch

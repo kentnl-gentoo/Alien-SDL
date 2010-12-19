@@ -91,6 +91,7 @@ my $source_packs = [
         sha1sum  => 'ba625b4b404589b97e92d7acd165992debe576dd',
         patches => [
           'test1.patch',
+          'SDL-1.2.14-openbsd-rldflags.patch',
         ],
       },
       {
@@ -205,6 +206,7 @@ my $source_packs = [
         sha1sum  => 'ba625b4b404589b97e92d7acd165992debe576dd',
         patches => [
           'test1.patch',
+          'SDL-1.2.14-openbsd-rldflags.patch',
         ],
       },
       {
@@ -287,6 +289,7 @@ my $source_packs = [
         sha1sum  => 'ba625b4b404589b97e92d7acd165992debe576dd',
         patches => [
           'test1.patch',
+          'SDL-1.2.14-openbsd-rldflags.patch',
         ],
       },
       {
@@ -394,6 +397,7 @@ my $source_packs = [
         sha1sum  => 'ba625b4b404589b97e92d7acd165992debe576dd',
         patches => [
           'test1.patch',
+          'SDL-1.2.14-openbsd-rldflags.patch',
         ],
       },
       {
@@ -543,6 +547,7 @@ my $source_packs = [
         sha1sum  => 'ba625b4b404589b97e92d7acd165992debe576dd',
         patches => [
           'test1.patch',
+          'SDL-1.2.14-openbsd-rldflags.patch',
         ],
       },
       {
@@ -651,6 +656,7 @@ sub check_prereqs_libs {
       '/usr/local/include' => '/usr/local/lib',
       '/usr/include'       => '/usr/lib',
       '/usr/X11R6/include' => '/usr/X11R6/lib',
+      '/usr/pkg/include'   => '/usr/pkg/lib',
     };
 
     if( -e '/usr/lib64'  && $Config{'myarchname'} =~ /64/) {
@@ -706,8 +712,10 @@ sub check_prereqs_tools {
 
   foreach my $tool (@tools) {
     
-    if(-x File::Which::which($tool)
-    || ('pkg-config' eq $tool && defined $ENV{PKG_CONFIG} && $ENV{PKG_CONFIG} && -x File::Which::which($ENV{PKG_CONFIG}))) {
+    if((File::Which::which($tool) && -x File::Which::which($tool))
+    || ('pkg-config' eq $tool && defined $ENV{PKG_CONFIG} && $ENV{PKG_CONFIG}
+                              && File::Which::which($ENV{PKG_CONFIG})
+                              && -x File::Which::which($ENV{PKG_CONFIG}))) {
       $ret &= 1;
     }
     else {
