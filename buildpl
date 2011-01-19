@@ -1,0 +1,48 @@
+Gonna use 'My::Builder::Unix' class ...
+
+Welcome to Alien::SDL module installation
+-----------------------------------------
+
+Gonna check config script...
+(scriptname=sdl-config)
+Gonna check availability of prebuilt binaries ...
+(os=linux cc=cc archname=x86_64-linux-thread-multi)
+Gonna check possibility for building from sources ...
+(os=linux cc=cc)
+CHECKING prereqs for:
+	Source code build: SDL-1.2.14 & co. (RECOMMENDED)
+	builds: SDL, SDL_(image|mixer|ttf|gfx|Pango)
+	needs preinstalled: (freetype2|pango)-devel
+CHECKING prereqs for:
+	Source code build: SDL-1.2.14 & co. (builds only SDL+SDL_*)
+	builds: SDL, SDL_(image|mixer|ttf|gfx|Pango)
+	needs preinstalled: all non-SDL libs
+CHECKING prereqs for:
+	Source code build: SDL-1.2.14 & co. (no PANGO, but TTF)
+	builds: SDL, SDL_(image|mixer|ttf|gfx)
+	needs preinstalled: freetype2-devel
+CHECKING prereqs for:
+	Source code build: SDL-1.2.14 & co. (no PANGO, no TTF)
+	builds: SDL, SDL_(image|mixer|gfx)
+CHECKING prereqs for:
+	Source code build: SDL-1.2.14 & co. + all prereq. libraries
+	builds: zlib, jpeg, tiff, png, freetype, SDL, SDL_(image|mixer|ttf|gfx)
+
+You have the following options:
+[1] Source code build: SDL-1.2.14 & co. (RECOMMENDED)
+	builds: SDL, SDL_(image|mixer|ttf|gfx|Pango)
+	needs preinstalled: (freetype2|pango)-devel
+[2] Source code build: SDL-1.2.14 & co. (builds only SDL+SDL_*)
+	builds: SDL, SDL_(image|mixer|ttf|gfx|Pango)
+	needs preinstalled: all non-SDL libs
+[3] Source code build: SDL-1.2.14 & co. (no PANGO, but TTF)
+	builds: SDL, SDL_(image|mixer|ttf|gfx)
+	needs preinstalled: freetype2-devel
+[4] Source code build: SDL-1.2.14 & co. (no PANGO, no TTF)
+	builds: SDL, SDL_(image|mixer|gfx)
+[5] Source code build: SDL-1.2.14 & co. + all prereq. libraries
+	builds: zlib, jpeg, tiff, png, freetype, SDL, SDL_(image|mixer|ttf|gfx)
+[6] Quit installation
+
+What way do you wanna go? [1 ]Creating new 'MYMETA.yml' with configuration results
+Creating new 'Build' script for 'Alien-SDL' version '1.418_2'

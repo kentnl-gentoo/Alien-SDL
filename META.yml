@@ -28,7 +28,7 @@ configure_requires:
   File::Which: 0
   Module::Build: 0.36
   Text::Patch: 1.4
-generated_by: 'Module::Build version 0.3607'
+generated_by: 'Module::Build version 0.3603'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -37,7 +37,7 @@ name: Alien-SDL
 provides:
   Alien::SDL:
     file: lib/Alien/SDL.pm
-    version: 1.421_3
+    version: 1.422
 requires:
   Capture::Tiny: 0
   ExtUtils::CBuilder: 0
@@ -49,4 +49,4 @@ resources:
   bugtracker: http://sdlperl.ath.cx/projects/SDLPerl/query?component=Alien%3A%3ASDL&status=!closed
   license: http://dev.perl.org/licenses/
   repository: http://github.com/PerlGameDev/Alien-SDL
-version: 1.421_3
+version: 1.422

@@ -1,6 +1,6 @@
 Revision history for Perl module Alien::SDL
 
-1.421_3  Sun Dec 19 2010
+1.422  Sun Dec 19 2010
      - added paths /usr/pkg/include and /usr/pkg/lib for dragonfly [FROGGS]
      - patch for SDL's configure script, -Wl,-rpath,LIBDIR for openbsd [FROGGS]
 
