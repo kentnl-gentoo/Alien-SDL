@@ -16,11 +16,11 @@ Alien::SDL - building, finding and using SDL binaries
 
 =head1 VERSION
 
-Version 1.422
+Version 1.422_1
 
 =cut
 
-our $VERSION = '1.422';
+our $VERSION = '1.422_1';
 $VERSION = eval $VERSION;
 
 =head1 SYNOPSIS
@@ -29,11 +29,21 @@ Alien::SDL tries (in given order) during its installation:
 
 =over
 
+=item * When given C<--with-sdl-config> option use specified sdl-config
+script to locate SDL libs.
+
+ perl ./Build.pl --with-sdl-config=/opt/sdl/bin/sdl-config
+
+ B<IMPORTANT NOTE:> Using --with-sdl-config avoids considering any other
+ build methods; no prompt with other available build options.
+
 =item * Locate an already installed SDL via 'sdl-config' script.
 
 =item * Check for SDL libs in directory specified by SDL_INST_DIR variable.
 In this case the module performs SDL library detection via
 '$SDL_INST_DIR/bin/sdl-config' script.
+
+ SDL_INST_DIR=/opt/sdl perl ./Build.PL
 
 =item * Download prebuilt SDL binaries (if available for your platform).
 

@@ -1,5 +1,4 @@
 Build.PL
-buildpl
 Changes
 inc/My/Builder.pm
 inc/My/Builder/Unix.pm
@@ -9,7 +8,6 @@ lib/Alien/SDL.pm
 LICENSE
 MANIFEST			This list of files
 MANIFEST.SKIP
-META.yml
 patches/jpeg-8a_cygwin.patch
 patches/SDL-1.2.14-openbsd-rldflags.patch
 patches/SDL_Pango-0.1.2-API-adds.1.patch
@@ -25,3 +23,4 @@ t/002_config.t
 t/003_check_header.t
 t/004_get_header_version.t
 TODO
+META.yml
