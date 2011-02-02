@@ -120,7 +120,7 @@ my $source_packs = [
         pack => 'png',
         dirname => 'libpng-1.4.1',
         url => [
-          'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
+          #'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
           'http://froggs.de/libpng/libpng-1.4.1.tar.gz',
         ],
         sha1sum  => '7a3488f5844068d67074f2507dd8a7ed9c69ff04',
@@ -133,7 +133,9 @@ my $source_packs = [
           'http://froggs.de/libsdl/SDL_image-1.2.10.tar.gz',
         ],
         sha1sum  => '6bae71fdfd795c3dbf39f6c7c0cf8b212914ef97',
-        patches => [ ],
+        patches => [
+          'SDL_image-1.2.10-libpng-flags.patch',
+        ],
       },
       {
         pack => 'SDL_mixer',
@@ -217,7 +219,9 @@ my $source_packs = [
           'http://froggs.de/libsdl/SDL_image-1.2.10.tar.gz',
         ],
         sha1sum  => '6bae71fdfd795c3dbf39f6c7c0cf8b212914ef97',
-        patches => [ ],
+        patches => [
+          'SDL_image-1.2.10-libpng-flags.patch',
+        ],
       },
       {
         pack => 'SDL_mixer',
@@ -330,7 +334,7 @@ my $source_packs = [
         pack => 'png',
         dirname => 'libpng-1.4.1',
         url => [
-          'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
+          #'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
           'http://froggs.de/libpng/libpng-1.4.1.tar.gz',
         ],
         sha1sum  => '7a3488f5844068d67074f2507dd8a7ed9c69ff04',
@@ -343,7 +347,9 @@ my $source_packs = [
           'http://froggs.de/libsdl/SDL_image-1.2.10.tar.gz',
         ],
         sha1sum  => '6bae71fdfd795c3dbf39f6c7c0cf8b212914ef97',
-        patches => [ ],
+        patches => [
+          'SDL_image-1.2.10-libpng-flags.patch',
+        ],
       },
       {
         pack => 'SDL_mixer',
@@ -438,7 +444,7 @@ my $source_packs = [
         pack => 'png',
         dirname => 'libpng-1.4.1',
         url => [
-          'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
+          #'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
           'http://froggs.de/libpng/libpng-1.4.1.tar.gz',
         ],
         sha1sum  => '7a3488f5844068d67074f2507dd8a7ed9c69ff04',
@@ -451,7 +457,9 @@ my $source_packs = [
           'http://froggs.de/libsdl/SDL_image-1.2.10.tar.gz',
         ],
         sha1sum  => '6bae71fdfd795c3dbf39f6c7c0cf8b212914ef97',
-        patches => [ ],
+        patches => [
+          'SDL_image-1.2.10-libpng-flags.patch',
+        ],
       },
       {
         pack => 'SDL_mixer',
@@ -523,7 +531,7 @@ my $source_packs = [
         pack => 'png',
         dirname => 'libpng-1.4.1',
         url => [
-          'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
+          #'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
           'http://froggs.de/libpng/libpng-1.4.1.tar.gz',
         ],
         sha1sum  => '7a3488f5844068d67074f2507dd8a7ed9c69ff04',
@@ -558,7 +566,9 @@ my $source_packs = [
           'http://froggs.de/libsdl/SDL_image-1.2.10.tar.gz',
         ],
         sha1sum  => '6bae71fdfd795c3dbf39f6c7c0cf8b212914ef97',
-        patches => [ ],
+        patches => [
+          'SDL_image-1.2.10-libpng-flags.patch',
+        ],
       },
       {
         pack => 'SDL_mixer',

@@ -16,11 +16,11 @@ Alien::SDL - building, finding and using SDL binaries
 
 =head1 VERSION
 
-Version 1.423
+Version 1.424
 
 =cut
 
-our $VERSION = '1.423';
+our $VERSION = '1.424';
 $VERSION = eval $VERSION;
 
 =head1 SYNOPSIS
@@ -38,8 +38,8 @@ or using default script name 'sdl-config' by running:
 
  perl ./Build.pl --with-sdl-config
 
- B<IMPORTANT NOTE:> Using --with-sdl-config avoids considering any other
- build methods; no prompt with other available build options.
+B<IMPORTANT NOTE:> Using --with-sdl-config avoids considering any other
+build methods; no prompt with other available build options.
 
 =item * Locate an already installed SDL via 'sdl-config' script.
 
