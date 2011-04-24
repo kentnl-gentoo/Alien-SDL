@@ -118,7 +118,7 @@ sub _get_configure_cmd {
 
   # NOTE: all ugly IFs concerning ./configure params have to go here
 
-  if(($pack eq 'SDL_gfx') && $Config{archname} =~ /(powerpc|ppc|64|2level|alpha)/i) {
+  if(($pack eq 'SDL_gfx') && $Config{archname} =~ /(powerpc|ppc|64|2level|alpha|armv5)/i) {
     $extra .= ' --disable-mmx';
   }
   
@@ -135,7 +135,7 @@ sub _get_configure_cmd {
     $extra_cflags .= ' -DNO_SHARED_MEMORY';
   }
 
-  if($pack eq 'SDL_image' && $^O eq 'darwin') {
+  if($pack =~ /^SDL_(image|mixer|ttf|gfx|Pango)$/ && $^O eq 'darwin') {
     $extra .= ' --disable-sdltest';
   }
 
