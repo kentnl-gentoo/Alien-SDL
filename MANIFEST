@@ -25,3 +25,4 @@ t/002_config.t
 t/003_check_header.t
 t/004_get_header_version.t
 TODO
+META.json

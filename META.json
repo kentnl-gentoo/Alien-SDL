@@ -1,0 +1,79 @@
+{
+   "abstract" : "Get, Build and Use SDL libraries",
+   "author" : [
+      "Kartik Thakore <KTHAKORE@cpan.org>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110930",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Alien-SDL",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Archive::Extract" : 0,
+            "Archive::Tar" : 0,
+            "Archive::Zip" : 0,
+            "Digest::SHA" : 0,
+            "ExtUtils::CBuilder" : 0,
+            "File::Fetch" : "0.24",
+            "File::Find" : 0,
+            "File::Path" : "2.08",
+            "File::ShareDir" : 0,
+            "File::Spec" : 0,
+            "File::Temp" : 0,
+            "File::Which" : 0,
+            "Module::Build" : "0.36",
+            "Text::Patch" : "1.4"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Archive::Extract" : 0,
+            "Digest::SHA" : 0,
+            "File::Fetch" : "0.24",
+            "File::Find" : 0,
+            "File::Path" : "2.08",
+            "File::ShareDir" : 0,
+            "File::Spec" : 0,
+            "File::Which" : 0,
+            "Module::Build" : "0.36",
+            "Text::Patch" : "1.4"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Capture::Tiny" : 0,
+            "ExtUtils::CBuilder" : 0,
+            "File::ShareDir" : "1.00",
+            "File::Spec" : 0,
+            "File::Temp" : 0,
+            "File::Which" : 0
+         }
+      }
+   },
+   "provides" : {
+      "Alien::SDL" : {
+         "file" : "lib/Alien/SDL.pm",
+         "version" : "1.427"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "http://sdlperl.ath.cx/projects/SDLPerl/query?component=Alien%3A%3ASDL&status=!closed"
+      },
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "url" : "http://github.com/PerlGameDev/Alien-SDL"
+      }
+   },
+   "version" : "1.427"
+}

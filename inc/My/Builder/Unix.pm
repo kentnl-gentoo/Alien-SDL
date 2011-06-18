@@ -7,6 +7,7 @@ use base 'My::Builder';
 use File::Spec::Functions qw(catdir catfile rel2abs);
 use My::Utility qw(check_header check_prereqs_libs check_prereqs_tools);
 use Config;
+use Capture::Tiny;
 
 # $Config{cc} tells us to use gcc-4, but it is not there by default
 if($^O eq 'cygwin') {
@@ -95,6 +96,8 @@ sub build_binaries {
         }
       }
 
+      $self->do_system('cp ../SDL-1.2.14/libtool libtool') if $pack->{pack} eq 'SDL_Pango';
+
       # do 'make install'
       my @cmd = ($self->_get_make, 'install');
       print "Running make install $pack->{pack}...\n";
@@ -113,16 +116,23 @@ sub _get_configure_cmd {
   my ($self, $pack, $prefixdir) = @_;
   my $extra                     = '';
   my $extra_cflags              = "-I$prefixdir/include";
-  my $extra_ldflags             = "-L$prefixdir/lib";  
+  my $extra_ldflags             = "-L$prefixdir/lib";
+  my $extra_PATH                = "";
+  my $uname                     = $Config{archname};
+  my $stdout                    = '';
+  my $stderr                    = '';
   my $cmd;
+  
+  ($stdout, $stderr) = Capture::Tiny::capture { print `uname -a`; };
+  $uname .= " $stdout" if $stdout;
 
   # NOTE: all ugly IFs concerning ./configure params have to go here
 
-  if(($pack eq 'SDL_gfx') && $Config{archname} =~ /(powerpc|ppc|64|2level|alpha|armv5)/i) {
+  if($pack eq 'SDL_gfx' && $uname =~ /(powerpc|ppc|64|2level|alpha|armv5|sparc)/i) {
     $extra .= ' --disable-mmx';
   }
   
-  if(($pack eq 'SDL') && ($Config{archname} =~ /(powerpc|ppc)/)) {
+  if($pack eq 'SDL' && $uname =~ /(powerpc|ppc)/) {
     $extra .= ' --disable-video-ps3';
   }
 
@@ -139,7 +149,7 @@ sub _get_configure_cmd {
     $extra .= ' --disable-sdltest';
   }
 
-  if(($pack eq 'SDL') && ($Config{archname} =~ /solaris/) && !check_header($extra_cflags, 'sys/audioio.h')) {
+  if($pack eq 'SDL' && $^O eq 'solaris' && !check_header($extra_cflags, 'sys/audioio.h')) {
     $extra .= ' --disable-audio';
   }
 
@@ -160,6 +170,12 @@ sub _get_configure_cmd {
   if($pack eq 'jpeg') {
     # otherwise libtiff will complain about invalid version number on dragonflybsd
     $extra .= " --disable-ld-version-script";
+  }
+
+  if($^O eq 'solaris' && -d '/usr/ccs/bin') {
+    # otherwise we get "false cru build/libSDLmain.a build/SDL_dummy_main.o"
+    # see http://fixunix.com/ntp/245613-false-cru-libs-libopts-libopts_la-libopts-o.html#post661558
+    $extra_PATH = ':/usr/ccs/bin';
   }
 
   ### This was intended as a fix for http://www.cpantesters.org/cpan/report/7064012
@@ -185,7 +201,7 @@ sub _get_configure_cmd {
   }
 
   # we need to have $prefixdir/bin in PATH while running ./configure
-  $cmd = "PATH=\"$prefixdir/bin:\$PATH\" $cmd";
+  $cmd = "PATH=\"$prefixdir/bin:\$PATH$extra_PATH\" $cmd";
 
   return $cmd;
 }
