@@ -35,6 +35,7 @@
       "configure" : {
          "requires" : {
             "Archive::Extract" : 0,
+            "Capture::Tiny" : 0,
             "Digest::SHA" : 0,
             "File::Fetch" : "0.24",
             "File::Find" : 0,
@@ -60,10 +61,10 @@
    "provides" : {
       "Alien::SDL" : {
          "file" : "lib/Alien/SDL.pm",
-         "version" : "1.427"
+         "version" : "1.428_1"
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "http://sdlperl.ath.cx/projects/SDLPerl/query?component=Alien%3A%3ASDL&status=!closed"
@@ -75,5 +76,5 @@
          "url" : "http://github.com/PerlGameDev/Alien-SDL"
       }
    },
-   "version" : "1.427"
+   "version" : "1.428_1"
 }

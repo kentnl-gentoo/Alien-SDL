@@ -8,9 +8,11 @@ lib/Alien/SDL.pm
 LICENSE
 MANIFEST			This list of files
 MANIFEST.SKIP
+META.json
 META.yml
 patches/jpeg-8a_cygwin.patch
 patches/SDL-1.2.14-openbsd-rldflags.patch
+patches/SDL-1.2.14-video_mmx.patch
 patches/SDL_image-1.2.10-libpng-flags.patch
 patches/SDL_Pango-0.1.2-API-adds.1.patch
 patches/SDL_Pango-0.1.2-API-adds.2.patch
@@ -25,4 +27,3 @@ t/002_config.t
 t/003_check_header.t
 t/004_get_header_version.t
 TODO
-META.json
