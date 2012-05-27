@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use base qw(Exporter);
 
-our @EXPORT_OK = qw(check_config_script check_prebuilt_binaries check_prereqs_libs check_prereqs_tools check_src_build find_SDL_dir find_file check_header sed_inplace get_dlext);
+our @EXPORT_OK = qw(check_config_script check_prebuilt_binaries check_prereqs_libs check_prereqs_tools check_src_build find_SDL_dir find_file check_header sed_inplace get_dlext $inc_lib_candidates);
 use Config;
 use ExtUtils::CBuilder;
 use File::Spec::Functions qw(splitdir catdir splitpath catpath rel2abs);
@@ -13,6 +13,27 @@ use File::Copy qw(cp);
 use Cwd qw(realpath);
 
 our $cc = $Config{cc};
+our $inc_lib_candidates = {
+'/usr/local/include' => '/usr/local/lib',
+'/usr/include'       => '/usr/lib',
+'/usr/X11R6/include' => '/usr/X11R6/lib',
+'/usr/pkg/include'   => '/usr/pkg/lib',
+'/usr/local/include/smpeg' => '/usr/local/lib',
+};
+$inc_lib_candidates->{'/usr/pkg/include/smpeg'}    = '/usr/local/lib' if -f '/usr/pkg/include/smpeg/smpeg.h';
+$inc_lib_candidates->{'/usr/include/smpeg'}        = '/usr/lib'       if -f '/usr/include/smpeg/smpeg.h';
+$inc_lib_candidates->{'/usr/X11R6/include'}        = '/usr/X11R6/lib' if -f '/usr/X11R6/include/GL/gl.h';
+$inc_lib_candidates->{'/usr/include/ogg'}          = '/usr/lib/x86_64-linux-gnu' if -f '/usr/lib/x86_64-linux-gnu/libogg.so';
+$inc_lib_candidates->{'/usr/include/vorbis'}       = '/usr/lib/x86_64-linux-gnu' if -f '/usr/lib/x86_64-linux-gnu/libvorbis.so';
+
+if( -e '/usr/lib64'  && $Config{'myarchname'} =~ /64/) {
+$inc_lib_candidates->{'/usr/include'} = '/usr/lib64'
+}
+
+if( exists $ENV{SDL_LIB} && exists $ENV{SDL_INC} ) {
+$inc_lib_candidates->{$ENV{SDL_INC}} = $ENV{SDL_LIB};
+}
+
 #### packs with prebuilt binaries
 # - all regexps has to match: arch_re ~ $Config{archname}, cc_re ~ $Config{cc}, os_re ~ $^O
 # - the order matters, we offer binaries to user in the same order (1st = preffered)
@@ -33,7 +54,7 @@ my $prebuilt_binaries = [
       title    => "Binaries Win/32bit SDL-1.2.14 (extended, 20111205)\n" .
                   "\t(gfx, image, mixer, net, smpeg, ttf, sound, svg, rtf, Pango)",
       url      => [
-        'http://strawberryperl.com/package/kmx/sdl/Win32_SDL-1.2.14-extended-bin_20111205.zip',	
+        'http://strawberryperl.com/package/kmx/sdl/Win32_SDL-1.2.14-extended-bin_20111205.zip',
         'http://froggs.de/libsdl/Win32_SDL-1.2.14-extended-bin_20111205.zip',
       ],
       sha1sum  => '553b7e21bb650d047ec9f2a5f650c67d76430e61',
@@ -47,7 +68,7 @@ my $prebuilt_binaries = [
                   "\tBEWARE: binaries are using old ABI - will fail with the latest gcc\n" .
                   "\tBEWARE: this is intended just for old strawberryperl 5.12.x/64bit",
       url      => [
-        'http://strawberryperl.com/package/kmx/sdl/Win64_SDL-1.2.14-extended-bin_20100824.zip',	
+        'http://strawberryperl.com/package/kmx/sdl/Win64_SDL-1.2.14-extended-bin_20100824.zip',
         'http://froggs.de/libsdl/Win64_SDL-1.2.14-extended-bin_20100824.zip',
       ],
       sha1sum  => 'ccffb7218bcb17544ab00c8a1ae383422fe9586d',
@@ -60,7 +81,7 @@ my $prebuilt_binaries = [
       title    => "Binaries Win/64bit SDL-1.2.14 (extended, 20111205) RECOMMENDED\n" .
                   "\t(gfx, image, mixer, net, smpeg, ttf, sound, svg, rtf, Pango)",
       url      => [
-        'http://strawberryperl.com/package/kmx/sdl/Win64_SDL-1.2.14-extended-bin_20111205.zip',	
+        'http://strawberryperl.com/package/kmx/sdl/Win64_SDL-1.2.14-extended-bin_20111205.zip',
         'http://froggs.de/libsdl/Win64_SDL-1.2.14-extended-bin_20111205.zip',
       ],
       sha1sum  => '35f3b496ca443a9d14eff77e9e26acfa813afafd',
@@ -157,6 +178,26 @@ my $source_packs = [
         ],
       },
       {
+        pack => 'ogg',
+        dirname => 'libogg-1.3.0',
+        url => [
+          'http://downloads.xiph.org/releases/ogg/libogg-1.3.0.tar.gz',
+          'http://froggs.de/libsdl/libogg-1.3.0.tar.gz',
+        ],
+        sha1sum  => 'a900af21b6d7db1c7aa74eb0c39589ed9db991b8',
+        patches => [ ],
+      },
+      {
+        pack => 'vorbis',
+        dirname => 'libvorbis-1.3.3',
+        url => [
+          'http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.3.tar.gz',
+          'http://froggs.de/libsdl/libvorbis-1.3.3.tar.gz',
+        ],
+        sha1sum  => '8dae60349292ed76db0e490dc5ee51088a84518b',
+        patches => [ ],
+      },
+      {
         pack => 'SDL_mixer',
         dirname => 'SDL_mixer-1.2.11',
         url => [
@@ -209,7 +250,163 @@ my $source_packs = [
       },
     ],
   },
-## another src set - builds just SDL+ SDL_* libs, all other prereq libs needs to be installed 
+  {
+    title   => "Source code build: SDL-1.2.15 PRERELEASE & co.\n" .
+               "\tbuilds: SDL, SDL_(image|mixer|ttf|gfx|Pango)\n" .
+               "\tneeds preinstalled: (freetype2|pango)-devel",
+    prereqs => {
+        libs => [
+          'pthread', # SDL
+          'pangoft2', 'pango', 'gobject', 'gmodule', 'glib', 'fontconfig', 'freetype', 'expat', # SDL_Pango
+        ]
+    },
+    members     => [
+      {
+        pack => 'zlib',
+        dirname => 'zlib-1.2.5',
+        url => [
+          'http://zlib.net/zlib-1.2.5.tar.gz',
+          'http://froggs.de/libz/zlib-1.2.5.tar.gz',
+        ],
+        sha1sum  => '8e8b93fa5eb80df1afe5422309dca42964562d7e',
+        patches => [
+          'zlib-1.2.5-bsd-ldconfig.patch',
+        ],
+      },
+      {
+        pack => 'SDL',
+        dirname => 'SDL-1.2.15',
+        url => [
+          'http://www.libsdl.org/tmp/prerelease/SDL/SDL-1.2.15.tar.gz',
+          #'http://froggs.de/libsdl/SDL-1.2.14.tar.gz',
+        ],
+        sha1sum  => '0c5f193ced810b0d7ce3ab06d808cbb5eef03a2c',
+        patches => [
+          'test1.patch',
+          #'SDL-1.2.15-openbsd-rldflags.patch',
+          #'SDL-1.2.14-video_mmx.patch',
+          'SDL-1.2.14-SDL_platform_h.patch',
+          'SDL-1.2.14-SDL_x11gl_c.patch',
+        ],
+      },
+      {
+        pack => 'jpeg',
+        dirname => 'jpeg-8b',
+        url => [
+          'http://www.ijg.org/files/jpegsrc.v8b.tar.gz',
+          'http://froggs.de/libjpeg/jpegsrc.v8b.tar.gz',
+        ],
+        sha1sum  => '15dc1939ea1a5b9d09baea11cceb13ca59e4f9df',
+        patches => [
+          'jpeg-8a_cygwin.patch',
+        ],
+      },
+      {
+        pack => 'tiff',
+        dirname => 'tiff-3.9.1',
+        url => [
+          'http://froggs.de/libtiff/tiff-3.9.1.tar.gz',
+          'ftp://ftp.remotesensing.org/pub/libtiff/tiff-3.9.1.tar.gz',
+        ],
+        sha1sum  => '675ad1977023a89201b80cd5cd4abadea7ba0897',
+        patches => [ ],
+      },
+      {
+        pack => 'png',
+        dirname => 'libpng-1.4.1',
+        url => [
+          #'http://downloads.sourceforge.net/project/libpng/01-libpng-master/1.4.1/libpng-1.4.1.tar.gz',
+          'http://froggs.de/libpng/libpng-1.4.1.tar.gz',
+        ],
+        sha1sum  => '7a3488f5844068d67074f2507dd8a7ed9c69ff04',
+      },
+      {
+        pack => 'SDL_image',
+        dirname => 'SDL_image-1.2.11',
+        url => [
+          'http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.11.tar.gz',
+          #'http://froggs.de/libsdl/SDL_image-1.2.10.tar.gz',
+        ],
+        sha1sum  => 'dd384ff87848595fcc0691833431ec5029f973c7',
+        patches => [
+          'SDL_image-1.2.11-libpng-flags.patch',
+          #'SDL_image-1.2.10-libpng15.patch',
+        ],
+      },
+      {
+        pack => 'ogg',
+        dirname => 'libogg-1.3.0',
+        url => [
+          'http://downloads.xiph.org/releases/ogg/libogg-1.3.0.tar.gz',
+          'http://froggs.de/libsdl/libogg-1.3.0.tar.gz',
+        ],
+        sha1sum  => 'a900af21b6d7db1c7aa74eb0c39589ed9db991b8',
+        patches => [ ],
+      },
+      {
+        pack => 'vorbis',
+        dirname => 'libvorbis-1.3.3',
+        url => [
+          'http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.3.tar.gz',
+          'http://froggs.de/libsdl/libvorbis-1.3.3.tar.gz',
+        ],
+        sha1sum  => '8dae60349292ed76db0e490dc5ee51088a84518b',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_mixer',
+        dirname => 'SDL_mixer-1.2.12',
+        url => [
+          'http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.12.tar.gz',
+          #'http://froggs.de/libsdl/SDL_mixer-1.2.12.tar.gz',
+        ],
+        sha1sum  => 'a20fa96470ad9e1052f1957b77ffa68fb090b384',
+        patches => [
+          'SDL_mixer-1.2.12-native-midi-win32.patch',
+          #'SDL_mixer-1.2.12-cygwin.patch',
+        ],
+      },
+      {
+        pack => 'SDL_ttf',
+        dirname => 'SDL_ttf-2.0.11',
+        url => [
+          'http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.11.tar.gz',
+          #'http://froggs.de/libsdl/SDL_ttf-2.0.10.tar.gz',
+        ],
+        sha1sum  => '0ccf7c70e26b7801d83f4847766e09f09db15cc6',
+        patches => [ ],
+      },
+      {
+        pack => 'SDL_gfx',
+        dirname => 'SDL_gfx-2.0.23',
+        url => [
+          'http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.23.tar.gz',
+          #'http://froggs.de/libsdl/SDL_gfx-2.0.20.tar.gz',
+        ],
+        sha1sum  => 'aae60e7fed539f3f8a0a0bd6da3bbcf625642596',
+        patches => [
+          #'SDL_gfx-2.0.20-configure.patch',
+        ],
+      },
+      {
+        pack => 'SDL_Pango',
+        dirname => 'SDL_Pango-0.1.2',
+        url => [
+          'http://downloads.sourceforge.net/sdlpango/SDL_Pango-0.1.2.tar.gz',
+          'http://froggs.de/libsdl/SDL_Pango-0.1.2.tar.gz',
+        ],
+        sha1sum  => 'c30f2941d476d9362850a150d29cb4a93730af68',
+        patches => [
+          'SDL_Pango-0.1.2-API-adds.1.patch',
+          'SDL_Pango-0.1.2-API-adds.2.patch',
+          'SDL_Pango-0.1.2-config-tools.1.patch',
+          'SDL_Pango-0.1.2-config-tools.2.patch',
+          'SDL_Pango-0.1.2-config-tools.3.patch',
+        ],
+      },
+    ],
+  },
+## another src set - builds just SDL+ SDL_* libs, all other prereq libs needs to be installed
   {
     title   => "Source code build: SDL-1.2.14 & co. (builds only SDL+SDL_*)\n" .
                "\tbuilds: SDL, SDL_(image|mixer|ttf|gfx|Pango)\n" .
@@ -218,6 +415,7 @@ my $source_packs = [
         libs => [
           'pthread', # SDL
           'z', 'jpeg', 'tiff', 'png',
+          'ogg', 'vorbis', # SDL_mixer
           'pangoft2', 'pango', 'gobject', 'gmodule', 'glib', 'fontconfig', 'freetype', 'expat', # SDL_Pango
         ]
     },
@@ -380,6 +578,26 @@ my $source_packs = [
         ],
       },
       {
+        pack => 'ogg',
+        dirname => 'libogg-1.3.0',
+        url => [
+          'http://downloads.xiph.org/releases/ogg/libogg-1.3.0.tar.gz',
+          'http://froggs.de/libsdl/libogg-1.3.0.tar.gz',
+        ],
+        sha1sum  => 'a900af21b6d7db1c7aa74eb0c39589ed9db991b8',
+        patches => [ ],
+      },
+      {
+        pack => 'vorbis',
+        dirname => 'libvorbis-1.3.3',
+        url => [
+          'http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.3.tar.gz',
+          'http://froggs.de/libsdl/libvorbis-1.3.3.tar.gz',
+        ],
+        sha1sum  => '8dae60349292ed76db0e490dc5ee51088a84518b',
+        patches => [ ],
+      },
+      {
         pack => 'SDL_mixer',
         dirname => 'SDL_mixer-1.2.11',
         url => [
@@ -490,6 +708,26 @@ my $source_packs = [
           'SDL_image-1.2.10-libpng-flags.patch',
           'SDL_image-1.2.10-libpng15.patch',
         ],
+      },
+      {
+        pack => 'ogg',
+        dirname => 'libogg-1.3.0',
+        url => [
+          'http://downloads.xiph.org/releases/ogg/libogg-1.3.0.tar.gz',
+          'http://froggs.de/libsdl/libogg-1.3.0.tar.gz',
+        ],
+        sha1sum  => 'a900af21b6d7db1c7aa74eb0c39589ed9db991b8',
+        patches => [ ],
+      },
+      {
+        pack => 'vorbis',
+        dirname => 'libvorbis-1.3.3',
+        url => [
+          'http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.3.tar.gz',
+          'http://froggs.de/libsdl/libvorbis-1.3.3.tar.gz',
+        ],
+        sha1sum  => '8dae60349292ed76db0e490dc5ee51088a84518b',
+        patches => [ ],
       },
       {
         pack => 'SDL_mixer',
@@ -603,6 +841,26 @@ my $source_packs = [
         ],
       },
       {
+        pack => 'ogg',
+        dirname => 'libogg-1.3.0',
+        url => [
+          'http://downloads.xiph.org/releases/ogg/libogg-1.3.0.tar.gz',
+          'http://froggs.de/libsdl/libogg-1.3.0.tar.gz',
+        ],
+        sha1sum  => 'a900af21b6d7db1c7aa74eb0c39589ed9db991b8',
+        patches => [ ],
+      },
+      {
+        pack => 'vorbis',
+        dirname => 'libvorbis-1.3.3',
+        url => [
+          'http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.3.tar.gz',
+          'http://froggs.de/libsdl/libvorbis-1.3.3.tar.gz',
+        ],
+        sha1sum  => '8dae60349292ed76db0e490dc5ee51088a84518b',
+        patches => [ ],
+      },
+      {
         pack => 'SDL_mixer',
         dirname => 'SDL_mixer-1.2.11',
         url => [
@@ -667,7 +925,7 @@ sub check_prebuilt_binaries
          ($Config{archname} =~ $b->{arch_re}) &&
          ($cc =~ $b->{cc_re}) &&
          (!defined $b->{gccversion_re} || $Config{gccversion} =~ $b->{gccversion_re})
-        ) {      
+        ) {
       $b->{buildtype} = 'use_prebuilt_binaries';
       push @good, $b;
     }
@@ -696,24 +954,10 @@ sub check_prereqs_libs {
   foreach my $lib (@libs) {
     my $found_lib          = '';
     my $found_inc          = '';
-    my $inc_lib_candidates = {
-      '/usr/local/include' => '/usr/local/lib',
-      '/usr/include'       => '/usr/lib',
-      '/usr/X11R6/include' => '/usr/X11R6/lib',
-      '/usr/pkg/include'   => '/usr/pkg/lib',
-    };
-
-    if( -e '/usr/lib64'  && $Config{'myarchname'} =~ /64/) {
-      $inc_lib_candidates->{'/usr/include'} = '/usr/lib64'
-    }
-
-    if( exists $ENV{SDL_LIB} && exists $ENV{SDL_INC} ) {
-      $inc_lib_candidates->{$ENV{SDL_INC}} = $ENV{SDL_LIB};
-    }
-
     my $header_map         = {
-      'z'    => 'zlib',
-      'jpeg' => 'jpeglib',
+      'z'      => 'zlib',
+      'jpeg'   => 'jpeglib',
+      'vorbis' => 'vorbisenc',
     };
     my $header             = (defined $header_map->{$lib}) ? $header_map->{$lib} : $lib;
 
@@ -755,7 +999,7 @@ sub check_prereqs_tools {
   my $ret  = 1;
 
   foreach my $tool (@tools) {
-    
+
     if((File::Which::which($tool) && -x File::Which::which($tool))
     || ('pkg-config' eq $tool && defined $ENV{PKG_CONFIG} && $ENV{PKG_CONFIG}
                               && File::Which::which($ENV{PKG_CONFIG})
@@ -828,7 +1072,7 @@ sub check_header {
   my $cb = ExtUtils::CBuilder->new(quiet => 1);
   my ($fs, $src) = File::Temp->tempfile('XXXXaa', SUFFIX => '.c', UNLINK => 1);
   my $inc = '';
-  $inc .= "#include <$_>\n" for @header;  
+  $inc .= "#include <$_>\n" for @header;
   syswrite($fs, <<MARKER); # write test source code
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #include <stdio.h>
@@ -874,7 +1118,7 @@ sub get_dlext {
     return 'so|dylib|bundle';
   }
   elsif( $^O =~ /cygwin/)
-  {  
+  {
     return 'la';
   }
   else {

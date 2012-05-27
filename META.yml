@@ -39,7 +39,7 @@ name: Alien-SDL
 provides:
   Alien::SDL:
     file: lib/Alien/SDL.pm
-    version: 1.430
+    version: 1.431_1
 requires:
   Capture::Tiny: 0
   ExtUtils::CBuilder: 0
@@ -48,7 +48,7 @@ requires:
   File::Temp: 0
   File::Which: 0
 resources:
-  bugtracker: http://sdlperl.ath.cx/projects/SDLPerl/query?component=Alien%3A%3ASDL&status=!closed
+  bugtracker: http://github.com/PerlGameDev/SDL/issues?labels=Alien-SDL
   license: http://dev.perl.org/licenses/
   repository: http://github.com/PerlGameDev/Alien-SDL
-version: 1.430
+version: 1.431_1

@@ -17,6 +17,13 @@ use Digest::SHA qw(sha1_hex);
 use Text::Patch;
 use Config;
 
+$SIG{__WARN__} = sub {
+	my $thing =  join('', @_);
+	$thing    =~ s|(://.+:).+(\@.+)|$1******$2|;
+	warn $thing;
+	return 1;
+};
+
 sub ACTION_build {
   my $self = shift;
   # as we want to wipe 'sharedir' during 'Build clean' we has
@@ -37,7 +44,7 @@ sub ACTION_install
 {
  my $self = shift;
  my $sharedir = '';
- 
+
  $sharedir = eval {File::ShareDir::dist_dir('Alien-SDL')} || '';
 
  if ( -d $sharedir )
@@ -118,7 +125,7 @@ sub fetch_file {
   die "###ERROR### _fetch_file undefined sha1sum\n" unless $sha1sum;
 
   # setting http_proxy environment var if we are within CPAN and this information is available
-  unless($ENV{http_proxy} && $ENV{PERL5_CPAN_IS_RUNNING}) {
+  if(!$ENV{http_proxy} && $ENV{PERL5_CPAN_IS_RUNNING}) {
     if(eval('require CPAN::Config; 1') && $CPAN::Config->{http_proxy}) {
       $ENV{http_proxy} = $CPAN::Config->{http_proxy};
       if($CPAN::Config->{proxy_user} && $CPAN::Config->{proxy_pass} && $CPAN::Config->{http_proxy} !~ m|//.+:.+@|) {
@@ -369,7 +376,9 @@ sub check_sha1sum {
   binmode($fh);
   $sha1->addfile($fh);
   close($fh);
-  return ($sha1->hexdigest eq $sha1sum) ? 1 : 0
+  my $_sha1sum = $sha1->hexdigest;
+  warn "###WARN## checksum for file $file is $_sha1sum but we expect $sha1sum\n" if $_sha1sum ne $sha1sum;
+  return ($_sha1sum eq $sha1sum) ? 1 : 0
 }
 
 sub patch_get_affected_files {

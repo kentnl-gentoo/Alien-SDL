@@ -5,7 +5,7 @@ use warnings;
 use base 'My::Builder';
 
 use File::Spec::Functions qw(catdir catfile rel2abs);
-use My::Utility qw(check_header check_prereqs_libs check_prereqs_tools);
+use My::Utility qw(check_header check_prereqs_libs check_prereqs_tools $inc_lib_candidates);
 use Config;
 use Capture::Tiny;
 
@@ -13,20 +13,6 @@ use Capture::Tiny;
 if($^O eq 'cygwin') {
   $My::Utility::cc = 'gcc';
 }
-
-my $inc_lib_candidates = {
-  '/usr/local/include'       => '/usr/local/lib',
-  '/usr/local/include/smpeg' => '/usr/local/lib',
-  '/usr/pkg/include'         => '/usr/pkg/lib',
-};
-
-$inc_lib_candidates->{'/usr/pkg/include/smpeg'}   = '/usr/local/lib' if -f '/usr/pkg/include/smpeg/smpeg.h';
-#$inc_lib_candidates->{'/usr/local/include/smpeg'} = '/usr/local/lib' if -f '/usr/local/include/smpeg/smpeg.h';
-$inc_lib_candidates->{'/usr/include/smpeg'}       = '/usr/lib'       if -f '/usr/include/smpeg/smpeg.h';
-$inc_lib_candidates->{'/usr/X11R6/include'}       = '/usr/X11R6/lib' if -f '/usr/X11R6/include/GL/gl.h';
-#$inc_lib_candidates->{'/usr/local/include'}       = '/usr/local/lib' if -f '/usr/local/include/png.h';
-#$inc_lib_candidates->{'/usr/local/include'}       = '/usr/local/lib' if -f '/usr/local/include/tiff.h';
-#$inc_lib_candidates->{'/usr/local/include'}       = '/usr/local/lib' if -f '/usr/local/include/jpeglib.h';
 
 sub get_additional_cflags {
   my $self = shift;
@@ -61,8 +47,8 @@ sub build_binaries {
   my( $self, $build_out, $build_src ) = @_;
   my $bp = $self->notes('build_params');
   foreach my $pack (@{$bp->{members}}) {
-    if(($pack->{pack} =~ m/^(png)$/ && check_prereqs_libs($pack->{pack}))
-    || ($pack->{pack} =~ m/^zlib$/  && check_prereqs_libs('z'))) {
+    if(($pack->{pack} =~ m/^png|ogg|vorbis$/ && check_prereqs_libs($pack->{pack}))
+    || ($pack->{pack} =~ m/^zlib$/           && check_prereqs_libs('z'))) {
       print "SKIPPING package '" . $pack->{dirname} . "' (already installed)...\n";
     }
     elsif($pack->{pack} =~ m/^(SDL_mixer)$/ && !$self->_is_gnu_make($self->_get_make)) {
@@ -141,7 +127,7 @@ sub _get_configure_cmd {
   my $stdout                    = '';
   my $stderr                    = '';
   my $cmd;
-  
+
   ($stdout, $stderr) = Capture::Tiny::capture { print `uname -a`; };
   $uname            .= " $stdout" if $stdout;
 
@@ -150,7 +136,7 @@ sub _get_configure_cmd {
   if($pack eq 'SDL_gfx' && $uname =~ /(powerpc|ppc|64|2level|alpha|armv5|sparc)/i) {
     $extra .= ' --disable-mmx';
   }
-  
+
   if($pack eq 'SDL' && $uname =~ /(powerpc|ppc)/) {
     $extra .= ' --disable-video-ps3';
   }
@@ -170,6 +156,10 @@ sub _get_configure_cmd {
 
   if($pack eq 'SDL' && $^O eq 'solaris' && !check_header($extra_cflags, 'sys/audioio.h')) {
     $extra .= ' --disable-audio';
+  }
+
+  if($pack eq 'SDL' && $^O eq 'openbsd') {
+    $extra_ldflags .= ' -lpthread';
   }
 
   if($pack =~ /^SDL_/) {
@@ -225,6 +215,10 @@ sub _get_configure_cmd {
 
   if($pack ne 'SDL' && $^O =~ /^openbsd|gnukfreebsd$/) {
     $cmd = "LD_LIBRARY_PATH=\"$prefixdir/lib:\$LD_LIBRARY_PATH\" $cmd";
+  }
+
+  if($pack eq 'vorbis') {
+    $cmd = "PKG_CONFIG_PATH=\"$prefixdir/lib/pkgconfig:\$PKG_CONFIG_PATH\" $cmd";
   }
 
   return $cmd;

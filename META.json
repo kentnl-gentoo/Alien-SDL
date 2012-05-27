@@ -61,13 +61,13 @@
    "provides" : {
       "Alien::SDL" : {
          "file" : "lib/Alien/SDL.pm",
-         "version" : "1.430"
+         "version" : "1.431_1"
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
-         "web" : "http://sdlperl.ath.cx/projects/SDLPerl/query?component=Alien%3A%3ASDL&status=!closed"
+         "web" : "http://github.com/PerlGameDev/SDL/issues?labels=Alien-SDL"
       },
       "license" : [
          "http://dev.perl.org/licenses/"
@@ -76,5 +76,5 @@
          "url" : "http://github.com/PerlGameDev/Alien-SDL"
       }
    },
-   "version" : "1.430"
+   "version" : "1.431_1"
 }
