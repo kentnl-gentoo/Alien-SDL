@@ -185,6 +185,9 @@ sub extract_binaries {
   # fix hardcoded prefix path in bin/sdl-config
   my ($version, $prefix, $incdir, $libdir) = find_SDL_dir(rel2abs($build_out));
   sed_inplace("$prefix/bin/sdl-config", 's/^prefix=.*/prefix=\''.quotemeta($prefix).'\'/');
+  if( $^O eq 'MSWin32' && $My::Utility::cc eq 'cl' ) {
+    cp( catfile('patches', 'SDL_config_win32.h'), catfile($incdir, 'SDL', 'SDL_config.h') );
+  }
 }
 
 sub extract_sources {
@@ -235,19 +238,22 @@ sub set_config_data {
   $self->config_data('share_subdir', abs2rel($prefix, rel2abs('sharedir')));
 
   # set defaults
+  my $L   = $My::Utility::cc eq 'cl'
+          ? '/LIBPATH:'
+          : '-L';
   my $cfg = {
     # defaults
     version     => $version,
     prefix      => '@PrEfIx@',
-    libs        => '-L' . $self->get_path('@PrEfIx@/lib') . ' -lSDLmain -lSDL',
+    libs        => $L . $self->get_path('@PrEfIx@/lib') . ' -lSDLmain -lSDL',
     cflags      => '-I' . $self->get_path('@PrEfIx@/include/SDL') . ' -D_GNU_SOURCE=1 -Dmain=SDL_main',
     shared_libs => [ ],
   };
 
   # overwrite values available via sdl-config
-  my $bp = $self->config_data('build_prefix') || $prefix;
+  my $bp      = $self->config_data('build_prefix') || $prefix;
   my $devnull = File::Spec->devnull();
-  my $script = rel2abs("$prefix/bin/sdl-config");
+  my $script  = $self->escape_path( rel2abs("$prefix/bin/sdl-config") );
   foreach my $p (qw(version prefix libs cflags)) {
     my $o=`$script --$p 2>$devnull`;
     if ($o) {
@@ -287,9 +293,9 @@ sub set_config_data {
       $shlib_map{smpeg} = $full unless $shlib_map{smpeg};
     }
     elsif ($f =~ /^(lib)?(png12)/) {
-      $shlib_map{png12} = $full unless $shlib_map{png12};
+      $shlib_map{png12} = $full unless $shlib_map{png12}; # what if it isnt png12?
     }
-    elsif ($f =~ /^(lib)?(tiff|jpeg|png)[^a-zA-Z]/) {
+    elsif ($f =~ /^(lib)?(intl|tiff|jpeg|png|ogg|vorbis|vorbisfile|FLAC|mikmod)[^a-zA-Z]/) {
       $shlib_map{$2} = $full unless $shlib_map{$2};
     }
     elsif ($f =~ /^(lib)?(SDL_[a-zA-Z]{2,8})[^a-zA-Z0-9]/) {
@@ -348,6 +354,12 @@ sub clean_dir {
     remove_tree($dir);
     make_path($dir);
   }
+}
+
+sub escape_path {
+  # this needs to be overriden in My::Builder::<platform>
+  my( $self, $path ) = @_;
+  return $path;
 }
 
 sub check_build_done_marker {

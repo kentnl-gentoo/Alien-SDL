@@ -16,11 +16,11 @@ Alien::SDL - building, finding and using SDL binaries
 
 =head1 VERSION
 
-Version 1.434
+Version 1.435_1
 
 =cut
 
-our $VERSION = '1.434';
+our $VERSION = '1.435_1';
 $VERSION = eval $VERSION;
 
 =head1 SYNOPSIS
@@ -232,7 +232,7 @@ sub check_header {
 
   require ExtUtils::CBuilder; # PAR packer workaround
 
-  my $config  = {};
+  my $config = {};
   if($^O eq 'cygwin') {
     my $ccflags = $Config{ccflags};
     $ccflags    =~ s/-fstack-protector//;
@@ -264,16 +264,26 @@ MARKER
   ($stdout, $stderr) = Capture::Tiny::capture {
     $obj = eval { $cb->compile( source => $src, extra_compiler_flags => Alien::SDL->config('cflags')); };
   };
+
   if($obj) {
     print STDERR "\n";
     unlink $obj;
     return 1;
   }
   else {
-    $stderr =~ s/[\r\n]$//;
-    $stderr =~ s/^\Q$src\E[\d\s:]*//;
+    if( $stderr ) {
+      $stderr =~ s/[\r\n]$//;
+      $stderr =~ s/^\Q$src\E[\d\s:]*//;
+      print STDERR " NOK: ($stderr)\n";
+    }
+    # on Windows (MSVC) stdout is set, but not stderr
+    else {
+      $stdout =~ s/[\r\n]$//;
+      $stdout =~ s/.+[\r\n]//;
+      $stdout =~ s/^\Q$src\E[\(\)\d\s:]*//;
+      print STDERR " NOK: ($stdout)\n";
+    }
 
-    print STDERR " NOK: ($stderr)\n";
     return 0;
   }
 }
