@@ -86,12 +86,12 @@ my $prebuilt_binaries = [
       gccversion_re => qr/^4\.(4\.[5-9]|[5-9]\.[0-9])$/,
     },
     {
-      title    => "Binaries Win/32bit SDL-1.2.15 (20120610)\n" .
+      title    => "Binaries Win/32bit SDL-1.2.15 (20120612)\n" .
                   "\t(gfx, image, mixer, smpeg, ttf)",
       url      => [
-        'http://froggs.de/libsdl/Win32_SDL-1.2.15-20120610.zip',
+        'http://froggs.de/libsdl/Win32_SDL-1.2.15-20120612.zip',
       ],
-      sha1sum  => 'fb0a582845b557a189700286eb57ce63f56a179c',
+      sha1sum  => '22c531c1d0cc5a363c05045760870b2f45e9d0da',
       arch_re  => qr/^MSWin32/,
       os_re    => qr/^MSWin32$/,
       cc_re    => qr/cl/,
@@ -364,6 +364,7 @@ sub check_prereqs_libs {
 
   foreach my $lib (@libs) {
     print "checking for $lib... ";
+    my $found_dll          = '';
     my $found_lib          = '';
     my $found_inc          = '';
     my $header_map         = {
@@ -379,6 +380,8 @@ sub check_prereqs_libs {
     foreach (keys %$inc_lib_candidates) {
       my $ld = $inc_lib_candidates->{$_};
       next unless -d $_ && -d $ld;
+      ($found_dll) = find_file($ld, qr/[\/\\]lib\Q$lib\E[\-\d\.]*\.($dlext[\d\.]*|so|dll)$/);
+      $found_dll   = $1 if $found_dll && $found_dll =~/^(.+($dlext|so|dll))/ && -e $1;
       ($found_lib) = find_file($ld, qr/[\/\\]lib\Q$lib\E[\-\d\.]*\.($dlext[\d\.]*|a|dll.a)$/);
       ($found_inc) = find_file($_,  qr/[\/\\]\Q$header\E[\-\d\.]*\.h$/);
       last if $found_lib && $found_inc;
@@ -395,7 +398,7 @@ sub check_prereqs_libs {
 
     if( scalar(@libs) == 1 ) {
       return $ret
-        ? (get_header_version($found_inc) || 'found')
+        ? [(get_header_version($found_inc) || 'found'), $found_dll]
         : 0;
     }
   }
