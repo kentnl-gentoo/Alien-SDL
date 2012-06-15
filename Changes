@@ -2,6 +2,9 @@ Revision history for Perl module Alien::SDL
 
 Versioning rule: public releases are even numbers, dev releases are odd. (same like perl dist)
 
+1.435_3 Fri Jun 12 2012
+     - small fix for latest dev release [FROGGS]
+
 1.435_2 Wed Jun 12 2012
      - installed libs are pushed to shlib_map [FROGGS]
      - msvc binary package contains patches SDL_rwops.h [FROGGS]
