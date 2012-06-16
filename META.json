@@ -61,7 +61,7 @@
    "provides" : {
       "Alien::SDL" : {
          "file" : "lib/Alien/SDL.pm",
-         "version" : "1.435_4"
+         "version" : "1.435_5"
       }
    },
    "release_status" : "testing",
@@ -76,5 +76,5 @@
          "url" : "http://github.com/PerlGameDev/Alien-SDL"
       }
    },
-   "version" : "1.435_4"
+   "version" : "1.435_5"
 }
