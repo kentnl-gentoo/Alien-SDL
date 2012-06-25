@@ -31,7 +31,10 @@ sub get_additional_libs {
   my %rv; # putting detected dir into hash to avoid duplicates
   for (keys %$inc_lib_candidates) {
     my $ld       = $inc_lib_candidates->{$_};
-    $rv{"-L$ld"} = 1 if ((-d $_) && (-d $ld));
+    if( -d $_ && -d $ld ) {
+      $rv{"-L$ld"}          = 1;
+      $rv{"-Wl,-rpath,$ld"} = 1 if $^O =~ /^linux|dragonfly|.+bsd$/;
+    }
   }
   push @list, (keys %rv);
   push @list, '-lpthread' if ($^O eq 'openbsd');
@@ -120,8 +123,8 @@ sub _get_configure_cmd {
   my ($self, $pack, $prefixdir) = @_;
   my $extra                     = '';
   my $escaped_prefixdir         = $self->escape_path( $prefixdir );
-  my $extra_cflags              = "-I$escaped_prefixdir/include" . $self->get_additional_cflags();
-  my $extra_ldflags             = "-L$escaped_prefixdir/lib"     . $self->get_additional_libs();
+  my $extra_cflags              = "-I$escaped_prefixdir/include " . $self->get_additional_cflags();
+  my $extra_ldflags             = "-L$escaped_prefixdir/lib "     . $self->get_additional_libs();
   my $extra_PATH                = "";
   my $uname                     = $Config{archname};
   my $stdout                    = '';
@@ -166,11 +169,6 @@ sub _get_configure_cmd {
     $extra .= " --with-sdl-prefix=$escaped_prefixdir";
   }
 
-  if($pack =~ /^SDL/ && -d '/usr/X11R6/lib' && -d '/usr/X11R6/include') {
-    $extra_cflags  .= ' -I/usr/X11R6/include';
-    $extra_ldflags .= ' -L/usr/X11R6/lib';
-  }
-
   if($^O eq 'cygwin') {
     #$extra_cflags  .= " -I/lib/gcc/i686-pc-cygwin/3.4.4/include";
     #$extra_ldflags .= " -L/lib/gcc/i686-pc-cygwin/3.4.4";
@@ -213,7 +211,7 @@ sub _get_configure_cmd {
            " CFLAGS=\"$extra_cflags\" LDFLAGS=\"$extra_ldflags\"";
   }
 
-  if($pack ne 'SDL' && $^O =~ /^openbsd|gnukfreebsd$/) {
+  if($pack ne 'SDL' && $^O =~ /bsd$/) {
     $cmd = "LD_LIBRARY_PATH=\"$escaped_prefixdir/lib:\$LD_LIBRARY_PATH\" $cmd";
   }
 
