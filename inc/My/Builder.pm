@@ -308,7 +308,7 @@ sub set_ld_config {
     elsif ($f =~ /^(lib)?(png12)/) {
       $shlib_map{png12} = $full unless $shlib_map{png12}; # what if it isnt png12?
     }
-    elsif ($f =~ /^(lib)?(intl|tiff|jpeg|png|ogg|vorbis|vorbisfile|FLAC|mikmod)[^a-zA-Z]/) {
+    elsif ($f =~ /^(lib)?(intl|z|tiff|jpeg|png|ogg|vorbis|vorbisfile|freetype|FLAC|mikmod)[^a-zA-Z]/) {
       $shlib_map{$2} = $full unless $shlib_map{$2};
     }
     elsif ($f =~ /^(lib)?(SDL_[a-zA-Z]{2,8})[^a-zA-Z0-9]/) {
@@ -329,6 +329,7 @@ sub set_ld_config {
   for(qw(pthread  z jpeg tiff png ogg vorbis vorbisfile freetype
          pangoft2 pango gobject gmodule glib fontconfig expat )) {
     if( !$shlib_map{$_} && $have_libs->{$_}->[0] ) {
+      next unless defined $have_libs->{$_}->[1];
       push @{ $cfg->{ld_shared_libs} }, $have_libs->{$_}->[1];
       $shlib_map{$_} = $have_libs->{$_}->[1];
     }
