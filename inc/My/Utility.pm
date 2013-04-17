@@ -284,9 +284,7 @@ our $source_packs = [
           'http://froggs.de/libsdl/SDL_gfx-2.0.23.tar.gz',
         ],
         sha1sum  => 'aae60e7fed539f3f8a0a0bd6da3bbcf625642596',
-        patches => [
-          'SDL_gfx-2.0.23-wrong-cpuid-mmx-detection.patch',
-        ],
+        patches => [ ],
         prereqs => {
           libs => [ ]
         }
@@ -496,7 +494,7 @@ sub check_header {
   my ($cflags, @header) = @_;
   print STDERR "Testing header(s): " . join(', ', @header) . "\n";
   my $cb = ExtUtils::CBuilder->new(quiet => 1);
-  my ($fs, $src) = File::Temp->tempfile('XXXXaa', SUFFIX => '.c', UNLINK => 1);
+  my ($fs, $src) = File::Temp::tempfile('aaXXXX', SUFFIX => '.c', UNLINK => 1);
   my $inc = '';
   $inc .= "#include <$_>\n" for @header;
   syswrite($fs, <<MARKER); # write test source code

@@ -30,7 +30,7 @@ configure_requires:
   Module::Build: 0.36
   Text::Patch: 1.4
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Module::Build version 0.4001, CPAN::Meta::Converter version 2.112621'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -39,7 +39,7 @@ name: Alien-SDL
 provides:
   Alien::SDL:
     file: lib/Alien/SDL.pm
-    version: 1.439_1
+    version: 1.440
 requires:
   Capture::Tiny: 0
   ExtUtils::CBuilder: 0
@@ -52,4 +52,4 @@ resources:
   bugtracker: http://github.com/PerlGameDev/SDL/issues?labels=Alien-SDL
   license: http://dev.perl.org/licenses/
   repository: http://github.com/PerlGameDev/Alien-SDL
-version: 1.439_1
+version: 1.440
