@@ -43,7 +43,7 @@ my $prebuilt_binaries = [
         'http://froggs.de/libsdl/Win32_SDL-1.2.14-extended-bin_20100704.zip',
       ],
       sha1sum  => '98409ddeb649024a9cc1ab8ccb2ca7e8fe804fd8',
-      arch_re  => qr/^MSWin32-x86-multi-thread$/,
+      arch_re  => qr/^MSWin32-x86-multi-thread(-64int)?$/,
       os_re    => qr/^MSWin32$/,
       cc_re    => qr/gcc/,
     },
@@ -55,7 +55,7 @@ my $prebuilt_binaries = [
         'http://froggs.de/libsdl/Win32_SDL-1.2.14-extended-bin_20111205.zip',
       ],
       sha1sum  => '553b7e21bb650d047ec9f2a5f650c67d76430e61',
-      arch_re  => qr/^MSWin32-x86-multi-thread$/,
+      arch_re  => qr/^MSWin32-x86-multi-thread(-64int)?$/,
       os_re    => qr/^MSWin32$/,
       cc_re    => qr/gcc/,
     },
@@ -188,6 +188,10 @@ our $source_packs = [
         patches => [
           'test1.patch',
           'SDL-1.2-openbsd-rldflags.patch',
+          'libsdl-1.2.15-const-xdata32.1.patch',
+          'libsdl-1.2.15-const-xdata32.2.patch',
+          'libsdl-1.2.15-const-xdata32.3.patch',
+          'libsdl-1.2.15-const-xdata32.4.patch',
         ],
         prereqs => {
           libs => [
@@ -277,13 +281,13 @@ our $source_packs = [
       },
       {
         pack => 'SDL_gfx',
-        version => '2.0.23',
-        dirname => 'SDL_gfx-2.0.23',
+        version => '2.0.25',
+        dirname => 'SDL_gfx-2.0.25',
         url => [
-          'http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.23.tar.gz',
-          'http://froggs.de/libsdl/SDL_gfx-2.0.23.tar.gz',
+          'http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.25.tar.gz',
+          'http://froggs.de/libsdl/SDL_gfx-2.0.25.tar.gz',
         ],
-        sha1sum  => 'aae60e7fed539f3f8a0a0bd6da3bbcf625642596',
+        sha1sum  => '20a89d0b71b7b790b830c70f17ed2c44100bc0f4',
         patches => [ ],
         prereqs => {
           libs => [ ]
