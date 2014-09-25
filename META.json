@@ -4,7 +4,7 @@
       "Kartik Thakore <KTHAKORE@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4001, CPAN::Meta::Converter version 2.112621",
+   "generated_by" : "Module::Build version 0.4204",
    "license" : [
       "perl_5"
    ],
@@ -16,45 +16,45 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Archive::Extract" : 0,
-            "Archive::Tar" : 0,
-            "Archive::Zip" : 0,
-            "Digest::SHA" : 0,
-            "ExtUtils::CBuilder" : 0,
+            "Archive::Extract" : "0",
+            "Archive::Tar" : "0",
+            "Archive::Zip" : "0",
+            "Digest::SHA" : "0",
+            "ExtUtils::CBuilder" : "0",
             "File::Fetch" : "0.24",
-            "File::Find" : 0,
+            "File::Find" : "0",
             "File::Path" : "2.08",
-            "File::ShareDir" : 0,
-            "File::Spec" : 0,
-            "File::Temp" : 0,
-            "File::Which" : 0,
+            "File::ShareDir" : "0",
+            "File::Spec" : "0",
+            "File::Temp" : "0",
+            "File::Which" : "0",
             "Module::Build" : "0.36",
             "Text::Patch" : "1.4"
          }
       },
       "configure" : {
          "requires" : {
-            "Archive::Extract" : 0,
-            "Capture::Tiny" : 0,
-            "Digest::SHA" : 0,
+            "Archive::Extract" : "0",
+            "Capture::Tiny" : "0",
+            "Digest::SHA" : "0",
             "File::Fetch" : "0.24",
-            "File::Find" : 0,
+            "File::Find" : "0",
             "File::Path" : "2.08",
-            "File::ShareDir" : 0,
-            "File::Spec" : 0,
-            "File::Which" : 0,
+            "File::ShareDir" : "0",
+            "File::Spec" : "0",
+            "File::Which" : "0",
             "Module::Build" : "0.36",
             "Text::Patch" : "1.4"
          }
       },
       "runtime" : {
          "requires" : {
-            "Capture::Tiny" : 0,
-            "ExtUtils::CBuilder" : 0,
+            "Capture::Tiny" : "0",
+            "ExtUtils::CBuilder" : "0",
             "File::ShareDir" : "1.00",
-            "File::Spec" : 0,
-            "File::Temp" : 0,
-            "File::Which" : 0,
+            "File::Spec" : "0",
+            "File::Temp" : "0",
+            "File::Which" : "0",
             "perl" : "5.008000"
          }
       }
@@ -62,10 +62,10 @@
    "provides" : {
       "Alien::SDL" : {
          "file" : "lib/Alien/SDL.pm",
-         "version" : "1.444"
+         "version" : "1.445_1"
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "http://github.com/PerlGameDev/SDL/issues?labels=Alien-SDL"
@@ -77,5 +77,5 @@
          "url" : "http://github.com/PerlGameDev/Alien-SDL"
       }
    },
-   "version" : "1.444"
+   "version" : "1.445_1"
 }

@@ -194,6 +194,7 @@ our $source_packs = [
           'libsdl-1.2.15-const-xdata32.4.patch',
           'SDL-1.2.15-PIC-in-CFLAGS.patch',
           'SDL-1.2.15-Makefile.in-OBJECTS.patch',
+          'SDL-1.2.15-mavericks-cgdirectpallete.patch',
         ],
         prereqs => {
           libs => [
@@ -286,8 +287,8 @@ our $source_packs = [
         version => '2.0.25',
         dirname => 'SDL_gfx-2.0.25',
         url => [
-          'http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.25.tar.gz',
           'http://froggs.de/libsdl/SDL_gfx-2.0.25.tar.gz',
+          'http://www.ferzkopp.net/Software/SDL_gfx-2.0/SDL_gfx-2.0.25.tar.gz',
         ],
         sha1sum  => '20a89d0b71b7b790b830c70f17ed2c44100bc0f4',
         patches => [ ],
@@ -573,7 +574,7 @@ sub get_dlext {
     return 'la';
   }
   else {
-    return $Config{dlext};
+    return $Config{so};
   }
 }
 
